@@ -4,23 +4,43 @@ Pipeline automatizado para la creación de videos verticales de alta retención 
 
 ---
 
+## 🧰 Requisitos
+
+- **Python 3.13** (probado con 3.13.0).
+- **FFmpeg / FFprobe 9.x en el PATH** (binario externo, no se instala por pip): <https://ffmpeg.org/download.html>
+- Dependencias de Python:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+> `onnxruntime` va explícito en `requirements.txt` porque `rembg` no lo declara como
+> dependencia dura: sin él falla `import rembg` y no funciona `shorts_assembler.quitar_fondo()`.
+
+---
+
 ## 📁 Estructura del Proyecto
 
 ```text
 proyecto/
 ├─ .env                                 # Variables de entorno y API keys (ElevenLabs)
-├─ README.md, AGENTS.md, AUDITORIA.md   # Documentación y normas de desarrollo
-├─ .agents/                             # Reglas de agentes y prompts del proyecto
-│  └─ rules/puntuacion_guiones.md
+├─ README.md, AGENTS.md, REPORTE_REORGANIZACION.md   # Documentación y normas de desarrollo
+├─ requirements.txt                      # Dependencias de Python (ver sección Requisitos)
+├─ .agents/                              # Reglas de agentes y prompts del proyecto
+│  ├─ rules/puntuacion_guiones.md
+│  ├─ rules/arquitectura_visual_variada.md
+│  └─ skills/director_visual_byte/
 ├─ src/                                 # Motor principal del pipeline
 │  ├─ rutas.py                          # Gestor centralizado de rutas y directorios
 │  ├─ shorts_assembler.py               # Generación ASS karaoke, ensamble FFmpeg y aceleración
 │  ├─ generar_animacion_byte.py         # Motor de animación de Byte (clips MOV RGBA)
 │  ├─ generar_paisaje_sonoro.py         # Síntesis procedural SFX, BGM Synthwave y masterización
-│  └─ mockups/                          # Generadores de interfaces interactivas por temática
-│     ├─ generar_mockup_tareas.py       # Gestor de tareas / Lista Andes (con paletas emocionales)
-│     ├─ generar_mockup_reunion.py      # Videollamadas / Sala Andes
-│     └─ generar_animacion_solucion.py  # Bandeja de correo / Shortwave
+│  ├─ validar_guion.py                  # Validador estricto de guiones (sin puntos, claims)
+│  └─ mockups/                          # Motor de interfaces interactivas por temática
+│     ├─ motor.py                       # Render unificado, paletas emocionales y pipe FFmpeg
+│     ├─ director_escena.py             # Arquetipos visuales y planos por video
+│     ├─ estilos/                       # Fondos dinámicos, temas y emociones de Byte
+│     └─ plantillas/                    # 16 plantillas de frame (reunión, tareas, correo…)
 ├─ assets/                              # Recursos gráficos y sonoros estables
 │  ├─ byte/
 │  │  ├─ transparentes/                 # Sprites PNG con canal alfa
@@ -77,8 +97,12 @@ dir_final = v_paths["final"]              # videos/video_03_tareas/final/
 
 Para compilar un video completo desde su guion:
 
+> ⚠️ **`prueba_end_to_end.py` no tiene flag `--offline`.** Si el texto no está en la caché de
+> `cache/cache_audio/`, consume créditos de ElevenLabs. Ver `REPORTE_REORGANIZACION.md` §3 antes
+> de ejecutarlo. Para pruebas sin costo usá `demo_ejecucion.py` o los `test_previews_video_XX.py`.
+
 ```bash
-# Ejecutar con un guion específico
+# Ejecutar con un guion específico (usa la API de ElevenLabs)
 python pruebas/prueba_end_to_end.py guiones/guion_03_tareas.json
 
 # O ejecutando la demo sintética sin costo de API

@@ -9,14 +9,18 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import unittest
 from PIL import Image, ImageDraw, ImageFont
+
+DIR_RAIZ = Path(__file__).resolve().parent.parent.parent
+if str(DIR_RAIZ / "src") not in sys.path:
+    sys.path.insert(0, str(DIR_RAIZ / "src"))
 
 from shorts_assembler import (
     generar_ass,
     ensamblar_video,
     validar_output,
-    procesar_short,
     _agrupar_caracteres_en_palabras,
     _dividir_en_chunks
 )
@@ -132,10 +136,20 @@ class TestShortsAssembler(unittest.TestCase):
             self.assertTrue(len(w.text) > 0)
             self.assertGreaterEqual(w.end, w.start)
 
-        # Chunks de máximo 4-5 palabras
+        # Máximo max_words_per_chunk en segmentos de demo; en segmentos de
+        # frase completa (hook/problema/cierre) el bloque llega hasta 6 palabras
+        # y se parte en 2 líneas con \N (regla de AGENTS.md)
+        SEGMENTOS_FRASE_COMPLETA = (
+            "cold_open", "hook", "problema", "escena_problema", "panico", "cierre", "pregunta"
+        )
         chunks = _dividir_en_chunks(words, self.segmentos, max_words_per_chunk=4)
+        self.assertGreater(len(chunks), 0)
         for chunk in chunks:
-            self.assertLessEqual(len(chunk), 4)
+            inicio = chunk[0].start
+            seg = next((s for s in self.segmentos if s["inicio"] <= inicio < s["fin"]), None)
+            tipo = str(seg.get("tipo", "")).lower() if seg else ""
+            limite = 6 if any(k in tipo for k in SEGMENTOS_FRASE_COMPLETA) else 4
+            self.assertLessEqual(len(chunk), limite)
 
     def test_02_generar_ass(self):
         """Verifica la generación del archivo .ass de subtítulos estilo karaoke."""
@@ -156,12 +170,12 @@ class TestShortsAssembler(unittest.TestCase):
         self.assertIn("[Script Info]", contenido)
         self.assertIn("PlayResX: 1080", contenido)
         self.assertIn("PlayResY: 1920", contenido)
-        self.assertIn("&H00FFE500", contenido)  # Cian Byte #00E5FF
+        self.assertIn("&H0000F5FF", contenido)  # Amarillo puro #FFF500 (AGENTS.md)
         self.assertIn("&H00FFFFFF", contenido)  # Blanco base
         self.assertIn("Style: KaraokeByte,Arial", contenido)
 
-        # Verificar tags de karaoke \k
-        self.assertIn(r"{\k", contenido)
+        # Verificar tags de karaoke \k con duración en centésimas
+        self.assertRegex(contenido, r"\\k\d+")
         self.assertIn("Dialogue: 0,", contenido)
 
     def test_03_ensamblar_y_validar(self):
