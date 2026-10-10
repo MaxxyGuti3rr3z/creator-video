@@ -78,6 +78,14 @@ from src.shorts_assembler import (
     _agrupar_caracteres_en_palabras
 )
 
+from src.registro_videos import (
+    resolver_carpeta,
+    sprites_para,
+    config_de_fondos,
+    overlay_vacio,
+    generar_fondos_del_video,
+)
+
 # Cargar explícitamente variables de entorno desde el .env del proyecto
 from dotenv import load_dotenv
 env_path = DIR_RAIZ / ".env"
@@ -702,42 +710,8 @@ def cargar_guion(ruta_arg: Optional[Union[str, Path]] = None) -> Tuple[Dict[str,
             guion = json.load(f)
 
         stem = p.stem
-        if "03" in stem or "tareas" in stem:
-            nombre_base = "guion_03"
-            v_paths = ruta_video("video_03_tareas")
-        elif "02" in stem or "reuniones" in stem:
-            nombre_base = "guion_02"
-            v_paths = ruta_video("video_02_reuniones")
-        elif "04" in stem or "correo" in stem:
-            nombre_base = "guion_04"
-            v_paths = ruta_video("video_04_correo")
-        elif "05" in stem or "presentaciones" in stem:
-            nombre_base = "guion_05"
-            v_paths = ruta_video("video_05_presentaciones")
-        elif "06" in stem or "atencion" in stem or "soporte" in stem:
-            nombre_base = "guion_06"
-            v_paths = ruta_video("video_06_atencion_clientes")
-        elif "07" in stem or "excel" in stem or "reportes" in stem:
-            nombre_base = "guion_07"
-            v_paths = ruta_video("video_07_excel_reportes")
-        elif "08" in stem or "busqueda" in stem or "investigacion" in stem:
-            nombre_base = "guion_08_busqueda_investigacion"
-            v_paths = ruta_video("video_08_busqueda_investigacion")
-        elif "10" in stem or "cotizacion" in stem or "presupuesto" in stem:
-            nombre_base = "guion_10_cotizacion_automatica"
-            v_paths = ruta_video("video_10_cotizacion_automatica")
-        elif "11" in stem or "cincuenta" in stem or "archivos" in stem:
-            nombre_base = "guion_11_cincuenta_archivos"
-            v_paths = ruta_video("video_11_cincuenta_archivos")
-        elif "09" in stem or "diseno" in stem or "flyers" in stem:
-            nombre_base = "guion_09_diseno_flyers"
-            v_paths = ruta_video("video_09_diseno_flyers")
-        elif "01" in stem or "bandeja" in stem:
-            nombre_base = "prueba_real"
-            v_paths = ruta_video("video_01_bandeja_correo")
-        else:
-            nombre_base = stem
-            v_paths = ruta_video(f"video_{stem}")
+        nombre_base, carpeta_video = resolver_carpeta(stem)
+        v_paths = ruta_video(carpeta_video)
 
         return guion, v_paths, nombre_base
 
@@ -847,98 +821,7 @@ def main():
     dir_transparentes = DIR_BYTE_TRANSPARENTES
     dir_transparentes.mkdir(parents=True, exist_ok=True)
 
-    if "13" in nombre_base or "noticias" in nombre_base:
-        imagenes_base = [
-            ("cold_open", DIR_BYTE_TRANSPARENTES / "cierre_transparente.png"),
-            ("hook", DIR_BYTE_TRANSPARENTES / "punto1_feliz_transparente.png"),
-            ("problema", DIR_BYTE_TRANSPARENTES / "punto_1_guion_08_busqueda_investigacion_transparente.png"),
-            ("punto_1", DIR_BYTE_TRANSPARENTES / "punto_2_guion_08_busqueda_investigacion_transparente.png"),
-            ("punto_2", DIR_BYTE_TRANSPARENTES / "punto_2_guion_08_busqueda_investigacion_transparente.png"),
-            ("resultado", DIR_BYTE_TRANSPARENTES / "resultado_guion_10_cotizacion_automatica_transparente.png"),
-            ("cierre", DIR_BYTE_TRANSPARENTES / "cierre_saltando_transparente.png"),
-        ]
-    elif "12" in nombre_base or "ciberseguridad" in nombre_base or "google_ads" in nombre_base:
-        imagenes_base = [
-            ("cold_open", DIR_BYTE_TRANSPARENTES / "punto_1_guion_08_busqueda_investigacion_transparente.png"),
-            ("hook", DIR_BYTE_TRANSPARENTES / "hook_estresado_transparente.png"),
-            ("problema", DIR_BYTE_TRANSPARENTES / "byte_cortocircuito_transparente.png"),
-            ("punto_1", DIR_BYTE_TRANSPARENTES / "punto_1_guion_08_busqueda_investigacion_transparente.png"),
-            ("punto_2", DIR_BYTE_TRANSPARENTES / "punto_2_guion_08_busqueda_investigacion_transparente.png"),
-            ("resultado", DIR_BYTE_TRANSPARENTES / "resultado_guion_10_cotizacion_automatica_transparente.png"),
-            ("cierre", DIR_BYTE_TRANSPARENTES / "cierre_saltando_transparente.png"),
-        ]
-    elif "11" in nombre_base or "cincuenta" in nombre_base or "archivos" in nombre_base:
-        imagenes_base = [
-            ("cold_open", DIR_BYTE_TRANSPARENTES / "escena_problema_guion_03_transparente.png"),
-            ("hook", DIR_BYTE_TRANSPARENTES / "punto_2_guion_10_cotizacion_automatica_transparente.png"),
-            ("problema", DIR_BYTE_TRANSPARENTES / "byte_cortocircuito_transparente.png"),
-            ("punto_1", DIR_BYTE_TRANSPARENTES / "byte_computadora_feliz_transparente.png"),
-            ("punto_2", DIR_BYTE_TRANSPARENTES / "resultado_guion_08_busqueda_investigacion_transparente.png"),
-            ("resultado", DIR_BYTE_TRANSPARENTES / "cierre_guion_07_transparente.png"),
-            ("cierre", DIR_BYTE_TRANSPARENTES / "cierre_saltando_transparente.png"),
-        ]
-    elif "10" in nombre_base or "cotizacion" in nombre_base or "presupuesto" in nombre_base:
-        imagenes_base = [
-            ("cold_open", DIR_BYTE_TRANSPARENTES / "cierre_transparente.png"),
-            ("hook", DIR_BYTE_TRANSPARENTES / "punto_2_guion_04_transparente.png"),
-            ("problema", DIR_BYTE_TRANSPARENTES / "byte_computadora_feliz_transparente.png"),
-            ("punto_1", DIR_BYTE_TRANSPARENTES / "punto_1_guion_04_transparente.png"),
-            ("punto_2", DIR_BYTE_TRANSPARENTES / "punto_2_guion_08_busqueda_investigacion_transparente.png"),
-            ("resultado", DIR_BYTE_TRANSPARENTES / "cierre_guion_04_transparente.png"),
-            ("cierre", DIR_BYTE_TRANSPARENTES / "cierre_saltando_transparente.png"),
-        ]
-    elif "09" in nombre_base or "diseno" in nombre_base or "flyers" in nombre_base:
-        imagenes_base = [
-            ("cold_open", DIR_BYTE_TRANSPARENTES / "byte_agotado_transparente.png"),
-            ("hook", DIR_BYTE_TRANSPARENTES / "punto_2_guion_04_transparente.png"),
-            ("problema", DIR_BYTE_TRANSPARENTES / "byte_cortocircuito_transparente.png"),
-            ("punto_1", DIR_BYTE_TRANSPARENTES / "punto_1_guion_04_transparente.png"),
-            ("punto_2", DIR_BYTE_TRANSPARENTES / "cierre_transparente.png"),
-            ("resultado", DIR_BYTE_TRANSPARENTES / "cierre_guion_04_transparente.png"),
-            ("cierre", DIR_BYTE_TRANSPARENTES / "cierre_guion_08_busqueda_investigacion_transparente.png"),
-        ]
-    elif "08" in nombre_base or "busqueda" in nombre_base or "investigacion" in nombre_base:
-        imagenes_base = [
-            ("cold_open", DIR_BYTE_TRANSPARENTES / "cold_open_guion_08_busqueda_investigacion_transparente.png"),
-            ("hook", DIR_BYTE_TRANSPARENTES / "hook_guion_08_busqueda_investigacion_transparente.png"),
-            ("problema", DIR_BYTE_TRANSPARENTES / "problema_guion_08_busqueda_investigacion_transparente.png"),
-            ("punto_1", DIR_BYTE_TRANSPARENTES / "punto_1_guion_08_busqueda_investigacion_transparente.png"),
-            ("punto_2", DIR_BYTE_TRANSPARENTES / "punto_2_guion_08_busqueda_investigacion_transparente.png"),
-            ("resultado", DIR_BYTE_TRANSPARENTES / "resultado_guion_08_busqueda_investigacion_transparente.png"),
-            ("cierre", DIR_BYTE_TRANSPARENTES / "cierre_guion_08_busqueda_investigacion_transparente.png"),
-        ]
-    elif "07" in nombre_base or "excel" in nombre_base:
-        imagenes_base = [
-            ("cold_open", DIR_BYTE_TRANSPARENTES / "byte_cortocircuito_transparente.png"),
-            ("hook", DIR_BYTE_TRANSPARENTES / "hook_guion_07_transparente.png"),
-            ("problema", DIR_BYTE_TRANSPARENTES / "problema_guion_07_transparente.png"),
-            ("punto_1", DIR_BYTE_TRANSPARENTES / "punto_1_guion_07_transparente.png"),
-            ("punto_2", DIR_BYTE_TRANSPARENTES / "punto_2_guion_07_transparente.png"),
-            ("resultado", DIR_BYTE_TRANSPARENTES / "resultado_guion_07_transparente.png"),
-            ("cierre", DIR_BYTE_TRANSPARENTES / "cierre_guion_07_transparente.png"),
-        ]
-    elif mockup_sugerido == "gestor_tareas" or "04" in nombre_base or "correo" in nombre_base or "05" in nombre_base or "presentaciones" in nombre_base or "06" in nombre_base or "atencion" in nombre_base:
-        imagenes_base = [
-            ("escena_problema", DIR_BYTE_ILUSTRACIONES / "byte_estresado.png"),
-            ("punto_1", DIR_BYTE_ILUSTRACIONES / "byte_ojos_estrella.png"),
-            ("punto_2", DIR_BYTE_ILUSTRACIONES / "Byte_enojado_computadora.png"),
-            ("resultado", DIR_BYTE_ILUSTRACIONES / "byte_pacifico_rodeados_archivos.png"),
-            ("cierre", DIR_BYTE_ILUSTRACIONES / "byte_saltando_feliz.png"),
-        ]
-    elif mockup_sugerido == "reunion_transcripcion":
-        imagenes_base = [
-            ("hook", DIR_BYTE_ILUSTRACIONES / "byte_estresado.png"),
-            ("punto1", DIR_BYTE_ILUSTRACIONES / "byte_ojos_estrella.png"),
-            ("punto2", DIR_BYTE_ILUSTRACIONES / "byte_pacifico_rodeados_archivos.png"),
-            ("cierre", DIR_BYTE_ILUSTRACIONES / "byte_saltando_feliz.png"),
-        ]
-    else:
-        imagenes_base = [
-            ("hook", DIR_BYTE_ILUSTRACIONES / "Byte_enojado_computadora.png"),
-            ("punto1", DIR_BYTE_ILUSTRACIONES / "byte_ojos_estrella.png"),
-            ("punto2", DIR_BYTE_ILUSTRACIONES / "byte_pacifico_rodeados_archivos.png"),
-            ("cierre", DIR_BYTE_ILUSTRACIONES / "byte_señalando_serio.png"),
-        ]
+    imagenes_base = sprites_para(nombre_base, mockup_sugerido)
 
     rutas_imagenes = []
     for clave, ruta_in in imagenes_base:
@@ -951,7 +834,7 @@ def main():
         rutas_imagenes.append(ruta_out)
 
     # Si se usan arquetipos cinematográficos con Byte integrado, la capa de overlay de FFmpeg es transparente
-    if "06" in nombre_base or "atencion" in nombre_base or "07" in nombre_base or "excel" in nombre_base or "08" in nombre_base or "busqueda" in nombre_base or "09" in nombre_base or "diseno" in nombre_base or "flyers" in nombre_base or "10" in nombre_base or "cotizacion" in nombre_base or "11" in nombre_base or "cincuenta" in nombre_base or "archivos" in nombre_base or "12" in nombre_base or "ciberseguridad" in nombre_base or "google_ads" in nombre_base or "13" in nombre_base or "noticias" in nombre_base:
+    if overlay_vacio(nombre_base):
         p_vacio = dir_transparentes / "transparente_vacio.png"
         if not p_vacio.exists():
             Image.new("RGBA", (1080, 1920), (0, 0, 0, 0)).save(p_vacio)
@@ -966,138 +849,10 @@ def main():
     dir_fondos = dir_intermedios / "fondos"
     dir_fondos.mkdir(parents=True, exist_ok=True)
 
-    if mockup_sugerido == "gestor_tareas" or ("03" in nombre_base and "04" not in nombre_base):
-        try:
-            from src.mockups import generar_video_interactivo_tareas
-        except ImportError:
-            from src.mockups.motor import generar_video_interactivo_tareas
-        print("\n[MOCKUP] Generando fondos interactivos de Lista Andes (gestor_tareas)...")
-        for i, seg in enumerate(segmentos_reales):
-            tipo_escena = seg["tipo"]  # "escena_problema", "punto_1", "punto_2", "resultado", "cierre"
-            p_fondo_mp4 = dir_fondos / f"fondo_escena_{i}_{tipo_escena}.mp4"
-            dur_esc = (seg["fin"] - seg["inicio"]) + 0.15
-            if not (p_fondo_mp4.exists() and p_fondo_mp4.stat().st_size > 50000):
-                generar_video_interactivo_tareas(tipo_escena, dur_esc, p_fondo_mp4)
-            rutas_fondos.append(p_fondo_mp4.resolve())
-    elif "04" in nombre_base or "correo" in nombre_base or mockup_sugerido == "asistente_correo":
-        try:
-            from src.mockups import generar_video_interactivo_correo
-        except ImportError:
-            from src.mockups.motor import generar_video_interactivo_correo
-        print("\n[MOCKUP] Generando fondos interactivos de Correo (Video 04)...")
-        for i, seg in enumerate(segmentos_reales):
-            tipo_escena = seg["tipo"]  # "escena_problema", "punto_1", "punto_2", "resultado", "cierre"
-            p_fondo_mp4 = dir_fondos / f"fondo_escena_{i}_{tipo_escena}.mp4"
-            dur_esc = (seg["fin"] - seg["inicio"]) + 0.15
-            if not (p_fondo_mp4.exists() and p_fondo_mp4.stat().st_size > 50000):
-                generar_video_interactivo_correo(tipo_escena, dur_esc, p_fondo_mp4)
-            rutas_fondos.append(p_fondo_mp4.resolve())
-    elif mockup_sugerido == "reunion_transcripcion":
-        try:
-            from src.mockups import generar_video_interactivo_reunion
-        except ImportError:
-            from src.mockups.motor import generar_video_interactivo_reunion
-        print("\n[MOCKUP] Generando fondos interactivos de Sala Andes (reunion_transcripcion)...")
-        for i, seg in enumerate(segmentos_reales):
-            tipo_escena = seg["tipo"]  # "hook", "punto_1", "punto_2", "cierre"
-            p_fondo_mp4 = dir_fondos / f"fondo_escena_{i}_{tipo_escena}.mp4"
-            dur_esc = (seg["fin"] - seg["inicio"]) + 0.15
-            if not (p_fondo_mp4.exists() and p_fondo_mp4.stat().st_size > 50000):
-                generar_video_interactivo_reunion(tipo_escena, dur_esc, p_fondo_mp4)
-            rutas_fondos.append(p_fondo_mp4.resolve())
-    elif "05" in nombre_base or "presentaciones" in nombre_base or mockup_sugerido == "presentaciones":
-        try:
-            from src.mockups import generar_video_interactivo_presentaciones
-        except ImportError:
-            from src.mockups.motor import generar_video_interactivo_presentaciones
-        print("\n[MOCKUP] Generando fondos interactivos de Presentaciones (Video 05 - Gamma/Canva)...")
-        for i, seg in enumerate(segmentos_reales):
-            tipo_escena = seg["tipo"]
-            p_fondo_mp4 = dir_fondos / f"fondo_escena_{i}_{tipo_escena}.mp4"
-            dur_esc = (seg["fin"] - seg["inicio"]) + 0.15
-            if not (p_fondo_mp4.exists() and p_fondo_mp4.stat().st_size > 50000):
-                generar_video_interactivo_presentaciones(tipo_escena, dur_esc, p_fondo_mp4)
-            rutas_fondos.append(p_fondo_mp4.resolve())
-    elif "06" in nombre_base or "atencion" in nombre_base or mockup_sugerido == "atencion_clientes":
-        from src.mockups import generar_video_interactivo_atencion_clientes
-        print("\n[MOCKUP] Generando fondos cinematográficos de Atención al Cliente (Video 06 - Fin/Lyro)...")
-        for i, seg in enumerate(segmentos_reales):
-            tipo_escena = seg["tipo"]
-            p_fondo_mp4 = dir_fondos / f"fondo_escena_{i}_{tipo_escena}.mp4"
-            dur_esc = (seg["fin"] - seg["inicio"]) + 0.15
-            if not (p_fondo_mp4.exists() and p_fondo_mp4.stat().st_size > 50000):
-                generar_video_interactivo_atencion_clientes(tipo_escena, dur_esc, p_fondo_mp4)
-            rutas_fondos.append(p_fondo_mp4.resolve())
-    elif "07" in nombre_base or "excel" in nombre_base or mockup_sugerido in ["excel_reportes", "dinamico_con_memes"]:
-        from src.mockups import generar_video_interactivo_excel_reportes
-        print("\n[MOCKUP] Generando fondos cinematográficos con memes de Excel y Reportes (Video 07)...")
-        for i, seg in enumerate(segmentos_reales):
-            tipo_escena = seg["tipo"]
-            p_fondo_mp4 = dir_fondos / f"fondo_escena_{i}_{tipo_escena}.mp4"
-            dur_esc = (seg["fin"] - seg["inicio"]) + 0.15
-            if not (p_fondo_mp4.exists() and p_fondo_mp4.stat().st_size > 50000):
-                generar_video_interactivo_excel_reportes(tipo_escena, dur_esc, p_fondo_mp4)
-            rutas_fondos.append(p_fondo_mp4.resolve())
-    elif "08" in nombre_base or "busqueda" in nombre_base or "investigacion" in nombre_base or mockup_sugerido == "busqueda_investigacion":
-        from src.mockups import generar_video_interactivo_busqueda_investigacion
-        print("\n[MOCKUP] Generando fondos cinematográficos de Búsqueda e Investigación (Video 08 - Perplexity/NotebookLM)...")
-        for i, seg in enumerate(segmentos_reales):
-            tipo_escena = seg["tipo"]
-            p_fondo_mp4 = dir_fondos / f"fondo_escena_{i}_{tipo_escena}.mp4"
-            dur_esc = (seg["fin"] - seg["inicio"]) + 0.15
-            if not (p_fondo_mp4.exists() and p_fondo_mp4.stat().st_size > 50000):
-                generar_video_interactivo_busqueda_investigacion(tipo_escena, dur_esc, p_fondo_mp4)
-            rutas_fondos.append(p_fondo_mp4.resolve())
-    elif "09" in nombre_base or "diseno" in nombre_base or "flyers" in nombre_base or mockup_sugerido in ["diseno_flyers", "flyers"]:
-        from src.mockups import generar_video_interactivo_diseno_flyers
-        print("\n[MOCKUP] Generando fondos cinematográficos de Diseño de Flyers (Video 09 - Canva/Remove.bg)...")
-        for i, seg in enumerate(segmentos_reales):
-            tipo_escena = seg["tipo"]
-            p_fondo_mp4 = dir_fondos / f"fondo_escena_{i}_{tipo_escena}.mp4"
-            dur_esc = (seg["fin"] - seg["inicio"]) + 0.15
-            if not (p_fondo_mp4.exists() and p_fondo_mp4.stat().st_size > 50000):
-                generar_video_interactivo_diseno_flyers(tipo_escena, dur_esc, p_fondo_mp4)
-            rutas_fondos.append(p_fondo_mp4.resolve())
-    elif "10" in nombre_base or "cotizacion" in nombre_base or mockup_sugerido in ["cotizacion_automatica", "cotizacion"]:
-        from src.mockups import generar_video_interactivo_cotizacion_automatica
-        print("\n[MOCKUP] Generando fondos cinematográficos de Cotización Automática (Video 10)...")
-        for i, seg in enumerate(segmentos_reales):
-            tipo_escena = seg["tipo"]
-            p_fondo_mp4 = dir_fondos / f"fondo_escena_{i}_{tipo_escena}.mp4"
-            dur_esc = (seg["fin"] - seg["inicio"]) + 0.15
-            if not (p_fondo_mp4.exists() and p_fondo_mp4.stat().st_size > 50000):
-                generar_video_interactivo_cotizacion_automatica(tipo_escena, dur_esc, p_fondo_mp4)
-            rutas_fondos.append(p_fondo_mp4.resolve())
-    elif "11" in nombre_base or "cincuenta" in nombre_base or "archivos" in nombre_base or mockup_sugerido in ["cincuenta_archivos", "archivos"]:
-        from src.mockups import generar_video_interactivo_cincuenta_archivos
-        print("\n[MOCKUP] Generando fondos cinematográficos de 50 Archivos (Video 11 - Análisis Documental IA)...")
-        for i, seg in enumerate(segmentos_reales):
-            tipo_escena = seg["tipo"]
-            p_fondo_mp4 = dir_fondos / f"fondo_escena_{i}_{tipo_escena}.mp4"
-            dur_esc = (seg["fin"] - seg["inicio"]) + 0.15
-            if not (p_fondo_mp4.exists() and p_fondo_mp4.stat().st_size > 50000):
-                generar_video_interactivo_cincuenta_archivos(tipo_escena, dur_esc, p_fondo_mp4)
-            rutas_fondos.append(p_fondo_mp4.resolve())
-    elif "12" in nombre_base or "ciberseguridad" in nombre_base or "google_ads" in nombre_base or mockup_sugerido in ["ciberseguridad_google_ads", "ciberseguridad"]:
-        from src.mockups import generar_video_interactivo_ciberseguridad_google_ads
-        print("\n[MOCKUP] Generando fondos cinematográficos de Ciberseguridad y Google Ads (Video 12)...")
-        for i, seg in enumerate(segmentos_reales):
-            tipo_escena = seg["tipo"]
-            p_fondo_mp4 = dir_fondos / f"fondo_escena_{i}_{tipo_escena}.mp4"
-            dur_esc = (seg["fin"] - seg["inicio"]) + 0.15
-            if not (p_fondo_mp4.exists() and p_fondo_mp4.stat().st_size > 50000):
-                generar_video_interactivo_ciberseguridad_google_ads(tipo_escena, dur_esc, p_fondo_mp4)
-            rutas_fondos.append(p_fondo_mp4.resolve())
-    elif "13" in nombre_base or "noticias" in nombre_base or mockup_sugerido in ["noticias_ia_realidad", "noticias"]:
-        from src.mockups import generar_video_interactivo_noticias_ia_realidad
-        print("\n[MOCKUP] Generando fondos cinematográficos de Noticias de IA (Video 13)...")
-        for i, seg in enumerate(segmentos_reales):
-            tipo_escena = seg["tipo"]
-            p_fondo_mp4 = dir_fondos / f"fondo_escena_{i}_{tipo_escena}.mp4"
-            dur_esc = (seg["fin"] - seg["inicio"]) + 0.15
-            if not (p_fondo_mp4.exists() and p_fondo_mp4.stat().st_size > 50000):
-                generar_video_interactivo_noticias_ia_realidad(tipo_escena, dur_esc, p_fondo_mp4)
-            rutas_fondos.append(p_fondo_mp4.resolve())
+    cfg_fondos = config_de_fondos(nombre_base, mockup_sugerido)
+    if cfg_fondos is not None:
+        print(f"\n[MOCKUP] Generando fondos de {cfg_fondos.etiqueta_fondos}...")
+        rutas_fondos = generar_fondos_del_video(cfg_fondos, segmentos_reales, dir_fondos)
 
 
     # -------------------------------------------------------------
