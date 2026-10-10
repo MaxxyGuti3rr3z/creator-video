@@ -1,0 +1,19 @@
+{
+  "hook": "¿Seguís tomando notas a mano en videollamadas eternas en vez de prestar atención?",
+  "puntos": [
+    {
+      "herramienta_o_tip": "Otter.ai",
+      "explicacion": "Graba audio en vivo, genera transcripciones automáticas y extrae resúmenes clave de las conversaciones.",
+      "opinion_byte": "¡Me encanta para no perder detalles, aunque conviene revisar lo que transcribe!",
+      "confianza_dato": "alta"
+    },
+    {
+      "herramienta_o_tip": "Fireflies.ai",
+      "explicacion": "Se une a tus reuniones virtuales para transcribir el diálogo y organizar notas compartidas.",
+      "opinion_byte": "Tener un asistente anotando todo me da una paz mental enorme.",
+      "confianza_dato": "alta"
+    }
+  ],
+  "cierre": "Contame en comentarios cómo tomás notas en tus reuniones.",
+  "mockup_sugerido": "reunion_transcripcion"
+}

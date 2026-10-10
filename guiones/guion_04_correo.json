@@ -1,0 +1,106 @@
+{
+  "video": 4,
+  "tema": "Correo: entender y responder más rápido",
+  "duracion_objetivo_seg": 30,
+  "tipo_mockup": "ilustrativo",
+  "texto_simulacion": "Simulación ilustrativa",
+
+  "hook": "¿Tu bandeja de entrada te está ganando la partida?",
+  "hook_alternativo": "Abrís el correo y ya querés cerrarlo",
+
+  "problema": "Hilos larguísimos, respuestas que se acumulan y un mail importante perdido en el medio",
+
+  "demostracion": [
+    {
+      "herramienta": "Shortwave",
+      "accion": "Shortwave te muestra un resumen arriba de cada hilo y su asistente puede redactarte una respuesta",
+      "capacidades_verificadas": [
+        "resumen automático arriba del hilo",
+        "asistente que redacta borradores de respuesta"
+      ],
+      "no_afirmar": [
+        "que es gratis",
+        "que funciona con cualquier proveedor de correo",
+        "precios o planes",
+        "que el borrador no necesita revisión"
+      ],
+      "fuente": "blog oficial de Shortwave (feb y may 2024)",
+      "fecha_verificacion": "2026-09-29",
+      "confianza_dato": "media"
+    },
+    {
+      "herramienta": "Claude",
+      "accion": "O pegás el mail en Claude y le pedís qué te están pidiendo y un borrador para contestar",
+      "capacidades_verificadas": [
+        "resumir un texto pegado",
+        "redactar un borrador de respuesta"
+      ],
+      "no_afirmar": [
+        "que se conecta solo a tu correo",
+        "que reemplaza la revisión humana"
+      ],
+      "fuente": "prueba propia: grabar una captura real antes de publicar",
+      "fecha_verificacion": "2026-09-29",
+      "confianza_dato": "alta"
+    }
+  ],
+
+  "resultado": "Entendés lo importante en segundos y contestás con un borrador listo, siempre revisándolo antes de enviar",
+
+  "cierre": "¿Cuántos mails tenés sin leer ahora? Contame en comentarios",
+
+  "notas_visuales": {
+    "regla": "un cambio visual cada 2 o 3 segundos en todas las escenas",
+    "escena_1_problema": {
+      "byte": "estresado",
+      "fondo": "rojo",
+      "cambios": [
+        "bandeja con hilos que se van sumando",
+        "un hilo se expande y ocupa la pantalla",
+        "un mail importante se hunde entre los demás"
+      ]
+    },
+    "escena_2_shortwave": {
+      "byte": "explicando",
+      "fondo": "azul",
+      "cambios": [
+        "el hilo largo aparece abierto",
+        "aparece el resumen de una línea arriba del hilo",
+        "se abre un panel de asistente con el borrador",
+        "zoom sobre el borrador"
+      ]
+    },
+    "escena_3_claude": {
+      "byte": "programando",
+      "fondo": "violeta",
+      "cambios": [
+        "el mail largo se pega en una ventana genérica de chat",
+        "aparece el pedido: qué me piden y un borrador",
+        "salen los puntos clave",
+        "aparece el borrador de respuesta"
+      ]
+    },
+    "escena_4_resultado": {
+      "byte": "meditando",
+      "fondo": "verde",
+      "cambios": [
+        "el borrador se marca como revisado",
+        "la bandeja se vacía de a poco",
+        "etiquetas cualitativas: Al Día, Más Liviano, Menos Caos"
+      ]
+    },
+    "escena_5_cierre": {
+      "byte": "celebrando",
+      "fondo": "ámbar",
+      "cambios": [
+        "pregunta grande en pantalla",
+        "Byte señala el área de comentarios"
+      ]
+    },
+    "nota_produccion": [
+      "Grabar 2 segundos reales de cada herramienta e intercalarlos con el mockup",
+      "No mostrar correos reales con datos de terceros en las capturas",
+      "Confirmar en la app de Shortwave que el resumen y el asistente siguen funcionando como en el guion antes de grabar"
+    ]
+  }
+}

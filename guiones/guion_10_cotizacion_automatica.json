@@ -1,0 +1,29 @@
+{
+  "video": 10,
+  "tema": "Cotización Automática de Pedidos con IA",
+  "duracion_objetivo_seg": 26,
+  "tipo_mockup": "cotizacion_automatica",
+  "fondo_dinamico": "estudio_creativo",
+
+  "cold_open": "Hola, necesito veinte remeras negras talle M y L con mi logo, cuánto me saldría,",
+  "hook": "Yo no pienso calcular esto a mano,",
+  "problema": "Le paso el mensaje a la inteligencia artificial y le digo qué necesito,",
+
+  "demostracion": [
+    {
+      "herramienta": "Extracción Inteligente",
+      "accion": "En segundos me extrae las cantidades y calcula cada valor por talle,",
+      "reaccion_byte": "Eureka - Bombilla IA",
+      "pill_beneficio": "⚡ Datos desglosados al instante"
+    },
+    {
+      "herramienta": "Tabla de Presupuesto",
+      "accion": "Y me lo deja todo ordenado y listo para cotizar,",
+      "reaccion_byte": "Mago Zen - Todo en Orden",
+      "pill_beneficio": "✓ Totales calculados en segundos"
+    }
+  ],
+
+  "resultado": "Ahora solo reviso la cotización final, y se la mando al cliente,",
+  "cierre": "Para mí, esto sí es ahorrar tiempo"
+}

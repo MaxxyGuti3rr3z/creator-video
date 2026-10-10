@@ -1,0 +1,82 @@
+{
+  "video": 5,
+  "tema": "Presentaciones e informes con IA: Gamma y Canva",
+  "duracion_objetivo_seg": 30,
+  "tipo_mockup": "ilustrativo",
+  "texto_simulacion": "Simulación ilustrativa",
+
+  "hook": "Esto cambia tus presentaciones",
+  "hook_alternativo": "Dejar de sufrir cada vez que tenés que armar diapositivas",
+
+  "problema": "Pasás horas armando informes, buscando datos y acomodando todo para presentar",
+
+  "demostracion": [
+    {
+      "herramienta": "Gamma",
+      "accion": "Gamma genera presentaciones desde una idea, y Byte la recomienda para empezar rápido sin complicarte",
+      "capacidades_verificadas": [
+        "generación de diapositivas desde un prompt o idea",
+        "formateo automático de tarjetas y datos"
+      ],
+      "no_afirmar": [
+        "que es gratis",
+        "precios o planes",
+        "que no requiere revisión humana"
+      ],
+      "fuente": "sitio oficial Gamma App",
+      "fecha_verificacion": "2026-10-01",
+      "confianza_dato": "alta"
+    },
+    {
+      "herramienta": "Canva",
+      "accion": "Canva genera diseños y presentaciones con IA, y Byte la prefiere para pulir el resultado visual",
+      "capacidades_verificadas": [
+        "Magic Design para presentaciones",
+        "edición y pulido visual con plantillas inteligentes"
+      ],
+      "no_afirmar": [
+        "que todas las funciones de IA son gratis",
+        "que reemplaza al diseñador",
+        "precios o planes"
+      ],
+      "fuente": "sitio oficial Canva Magic Studio",
+      "fecha_verificacion": "2026-10-01",
+      "confianza_dato": "revisar"
+    }
+  ],
+
+  "resultado": "Terminás con un material presentable, ordenado y visual, sin convertir cada informe en un proyecto interminable",
+
+  "cierre": "¿Cuál parte de tus informes automatizarías primero?",
+
+  "notas_visuales": {
+    "regla": "un cambio visual cada 2 o 3 segundos en todas las escenas",
+    "estilo_fondo": "ciudad_cyberpunk_animada",
+    "mockups_estilo": "mobile_first_grande",
+    "escena_1_problema": {
+      "byte": "estresado",
+      "mockup": "presentaciones_caos",
+      "vfx": "notificaciones_caos"
+    },
+    "escena_2_gamma": {
+      "byte": "ojos_estrella",
+      "mockup": "gamma_generacion",
+      "vfx": "chispa_ia_cyan"
+    },
+    "escena_3_canva": {
+      "byte": "curioso",
+      "mockup": "canva_pulido",
+      "vfx": "brillo_magico"
+    },
+    "escena_4_resultado": {
+      "byte": "pacifico_zen",
+      "mockup": "presentaciones_resultado",
+      "vfx": "aura_zen"
+    },
+    "escena_5_cierre": {
+      "byte": "saltando_feliz",
+      "mockup": "presentaciones_cierre",
+      "vfx": "pulso_pregunta"
+    }
+  }
+}

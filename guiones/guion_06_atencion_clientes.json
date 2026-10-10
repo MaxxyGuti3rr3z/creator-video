@@ -1,0 +1,87 @@
+{
+  "video": 6,
+  "tema": "Atención al cliente con IA: Intercom Fin y Tidio Lyro",
+  "duracion_objetivo_seg": 28,
+  "tipo_mockup": "ilustrativo",
+  "texto_simulacion": "Simulación ilustrativa",
+
+  "hook": "Dejá de responder siempre lo mismo",
+  "hook_alternativo": "Basta de contestar las mismas dudas de clientes todo el día",
+
+  "problema": "Todos los días contestás las mismas cinco preguntas de clientes, una por una, a mano",
+
+  "demostracion": [
+    {
+      "herramienta": "Intercom Fin",
+      "accion": "Herramientas como Intercom Fin leen tu centro de ayuda y responden por vos las veinticuatro horas",
+      "capacidades_verificadas": [
+        "respuestas automáticas basadas en base de conocimiento",
+        "resolución sin intervención humana en dudas frecuentes"
+      ],
+      "no_afirmar": [
+        "que reemplaza a todo el equipo humano",
+        "que es gratis",
+        "precios o planes"
+      ],
+      "fuente": "sitio oficial Intercom Fin AI Agent",
+      "fecha_verificacion": "2026-10-02",
+      "confianza_dato": "alta"
+    },
+    {
+      "herramienta": "Tidio Lyro",
+      "accion": "Y con Tidio Lyro resolvés lo repetitivo al instante sin tocar el teclado, liberando a tu equipo para lo complejo",
+      "capacidades_verificadas": [
+        "Lyro AI chatbot conversacional",
+        "respuestas contextuales basadas en soporte y preguntas frecuentes"
+      ],
+      "no_afirmar": [
+        "que no comete errores",
+        "que atiende cualquier tipo de reclamo",
+        "precios o planes"
+      ],
+      "fuente": "sitio oficial Tidio Lyro AI",
+      "fecha_verificacion": "2026-10-02",
+      "confianza_dato": "alta"
+    }
+  ],
+
+  "resultado": "Tu equipo deja de perder horas en dudas básicas y se enfoca en lo que de verdad necesita atención humana",
+
+  "cierre": "¿Cuántas horas al día perdés respondiendo mensajes? Contame abajo",
+
+  "notas_visuales": {
+    "regla": "un cambio visual cada 2 o 3 segundos en todas las escenas",
+    "estilo_fondo": "ciudad_cyberpunk_animada",
+    "mockups_estilo": "mobile_first_grande",
+    "escena_1_problema": {
+      "byte": "estresado",
+      "arquetipo": "PLANO_HERO_CAOS",
+      "mockup": "chat_caos_mensajes_repetidos",
+      "vfx": "burbujas_chat_rojo"
+    },
+    "escena_2_fin": {
+      "byte": "ojos_estrella",
+      "arquetipo": "PLANO_SHOWCASE_PANORAMICO",
+      "mockup": "intercom_fin_resolucion_inmediata",
+      "vfx": "chispa_ia_cyan"
+    },
+    "escena_3_lyro": {
+      "byte": "curioso_laptop",
+      "arquetipo": "PLANO_SPLIT_BEFORE_AFTER",
+      "mockup": "tidio_lyro_atencion_nocturna",
+      "vfx": "brillo_magico_ia"
+    },
+    "escena_4_resultado": {
+      "byte": "pacifico_zen",
+      "arquetipo": "PLANO_DECK_3D",
+      "mockup": "bandeja_soporte_en_cero",
+      "vfx": "aura_zen_esmeralda"
+    },
+    "escena_5_cierre": {
+      "byte": "saltando_feliz",
+      "arquetipo": "PLANO_HOST_COMMUNITY",
+      "mockup": "encuesta_tiempo_soporte",
+      "vfx": "pulso_pregunta"
+    }
+  }
+}

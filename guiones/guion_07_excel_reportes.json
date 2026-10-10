@@ -1,0 +1,94 @@
+{
+  "video": 7,
+  "tema": "Salir del Excel: Julius AI y Gamma",
+  "duracion_objetivo_seg": 26,
+  "tipo_mockup": "dinamico_con_memes",
+  "texto_simulacion": "Simulación ilustrativa",
+
+  "cold_open": "POV, viernes, seis menos un minuto y todavía sin reporte",
+  "hook": "Esto te saca del Excel",
+  "hook_alternativo": "Si todavía seguís peleando con fórmulas de Excel un viernes, mirá esto",
+
+  "problema": "Armar el informe del viernes te come la tarde entera",
+
+  "demostracion": [
+    {
+      "herramienta": "Julius AI",
+      "accion": "Julius AI lee tu planilla y arma gráficos solo con pedírselo en una frase",
+      "reaccion_byte": "Eureka - Bombilla IA",
+      "capacidades_verificadas": [
+        "análisis de hojas de cálculo CSV y Excel",
+        "generación automática de gráficos a partir de prompts"
+      ],
+      "no_afirmar": [
+        "que reemplaza a un equipo de ciencia de datos",
+        "precios o planes"
+      ],
+      "fuente": "sitio oficial Julius AI",
+      "fecha_verificacion": "2026-10-03",
+      "confianza_dato": "alta"
+    },
+    {
+      "herramienta": "Gamma",
+      "accion": "Y Gamma toma esas ideas y arma una presentación prolija lista para mandar en minutos",
+      "reaccion_byte": "Hacker - Tecleo Supersónico",
+      "capacidades_verificadas": [
+        "generación de presentaciones desde ideas y resúmenes",
+        "formato visual pulido automático"
+      ],
+      "no_afirmar": [
+        "que diseña presentaciones infinitas",
+        "precios o planes"
+      ],
+      "fuente": "sitio oficial Gamma App",
+      "fecha_verificacion": "2026-10-03",
+      "confianza_dato": "alta"
+    }
+  ],
+
+  "resultado": "Cerrás la compu el viernes con el informe listo y la cabeza en paz, sin deberle nada a nadie",
+
+  "cierre": "¿Vos cómo armás tus reportes hoy? Contame abajo",
+
+  "ritmo_visual": {
+    "regla_corte_seg": 1.8,
+    "beats": [
+      {
+        "seg": "0.0 - 2.5",
+        "nombre": "beat_01_cold_open",
+        "tipo": "meme_panico_reloj",
+        "descripcion": "Reloj rojo 17:59 titilando con sonido de tic-tac acelerado y Byte en cortocircuito"
+      },
+      {
+        "seg": "2.5 - 5.0",
+        "nombre": "beat_02_excel_caos",
+        "tipo": "caos_formulas_excel",
+        "descripcion": "Planilla Excel colapsada de errores #REF y Byte enojado tecleando furioso"
+      },
+      {
+        "seg": "5.0 - 10.5",
+        "nombre": "beat_03_julius_ai",
+        "tipo": "prompt_grafico_dinamico",
+        "descripcion": "Prompt en caja luminosa y gráfico de barras 3D que se dibuja solo con brillo cyan"
+      },
+      {
+        "seg": "10.5 - 16.0",
+        "nombre": "beat_04_gamma_app",
+        "tipo": "deck_diapositivas_rapidas",
+        "descripcion": "Diapositivas armándose a velocidad hacker y Byte con ojos de estrella"
+      },
+      {
+        "seg": "16.0 - 21.5",
+        "nombre": "beat_05_cierre_compu_paz",
+        "tipo": "alivio_fin_de_semana",
+        "descripcion": "Laptop cerrándose con sonido clap, atardecer y Byte meditando en paz zen"
+      },
+      {
+        "seg": "21.5 - 25.5",
+        "nombre": "beat_06_cta_comunidad",
+        "tipo": "pregunta_host",
+        "descripcion": "Encuesta interactiva con Byte saltando feliz señalando abajo"
+      }
+    ]
+  }
+}

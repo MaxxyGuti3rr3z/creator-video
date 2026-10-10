@@ -1,0 +1,50 @@
+{
+  "video": 11,
+  "tema": "Búsqueda y Análisis Documental con IA",
+  "duracion_objetivo_seg": 28,
+  "tipo_mockup": "cincuenta_archivos",
+  "fondo_dinamico": "estudio_tech",
+
+  "cold_open": "Necesito encontrar un dato clave entre cincuenta facturas,",
+  "hook": "Yo no pienso abrir una por una,",
+  "problema": "Si reviso archivo por archivo se me va toda la tarde,",
+
+  "demostracion": [
+    {
+      "herramienta": "Carga Masiva IA",
+      "accion": "Arrastro todos los documentos juntos y le pregunto cuánto gastamos en proveedores,",
+      "reaccion_byte": "Eureka - Bombilla IA",
+      "pill_beneficio": "⚡ 50 archivos indexados en segundos",
+      "capacidades_verificadas": [
+        "análisis semántico y lectura de múltiples archivos PDF simultáneos",
+        "extracción de montos y conceptos sin abrir documentos uno a uno"
+      ],
+      "no_afirmar": [
+        "cero errores garantizados",
+        "reemplazo absoluto de auditoría contable humana"
+      ],
+      "fuente": "Gemini NotebookLM y asistentes RAG de documentos",
+      "fecha_verificacion": "2026-10-07",
+      "confianza_dato": "alta"
+    },
+    {
+      "herramienta": "Extracción con Citas",
+      "accion": "En segundos calcula el total y me muestra el documento exacto de donde sacó cada número,",
+      "reaccion_byte": "Mago Zen - Todo en Orden",
+      "pill_beneficio": "✓ Fuentes y números verificados",
+      "capacidades_verificadas": [
+        "anclaje de respuestas a citas de origen con nombre de archivo",
+        "consolidación de datos numéricos dispersos"
+      ],
+      "no_afirmar": [
+        "cero alucinaciones"
+      ],
+      "fuente": "Documentación oficial NotebookLM y Claude Projects",
+      "fecha_verificacion": "2026-10-07",
+      "confianza_dato": "alta"
+    }
+  ],
+
+  "resultado": "Y pensar que iba a abrir todo a mano, qué manera de complicarme solo,",
+  "cierre": "¿Cuántos archivos tenés acumulados en tu compu? Seguro la inteligencia artificial te salva con alguno"
+}

@@ -1,0 +1,51 @@
+{
+  "video": 8,
+  "tema": "Búsqueda e Investigación: Perplexity y NotebookLM",
+  "duracion_objetivo_seg": 24,
+  "tipo_mockup": "busqueda_investigacion",
+  "fondo_dinamico": "viaje_espacial",
+
+  "cold_open": "POV, diez pestañas y ninguna respuesta,",
+  "hook": "Dejá de buscar a ciegas,",
+  "problema": "Abrís diez páginas distintas y ninguna te da la respuesta completa,",
+
+  "demostracion": [
+    {
+      "herramienta": "Perplexity",
+      "accion": "Perplexity te responde directo citando de dónde sacó cada dato sin que abras nada más,",
+      "reaccion_byte": "Eureka - Bombilla IA",
+      "pill_beneficio": "⚡ Citas reales con fuentes verificadas",
+      "capacidades_verificadas": [
+        "motor de respuesta conversacional con búsqueda web en tiempo real",
+        "citas bibliográficas y fuentes verificadas al pie de cada párrafo"
+      ],
+      "no_afirmar": [
+        "que nunca comete errores de interpretación",
+        "precios o suscripciones de pago"
+      ],
+      "fuente": "sitio oficial Perplexity AI",
+      "fecha_verificacion": "2026-10-03",
+      "confianza_dato": "alta"
+    },
+    {
+      "herramienta": "NotebookLM",
+      "accion": "Y NotebookLM lee tus propios documentos y te contesta solo con lo que hay ahí adentro,",
+      "reaccion_byte": "Hacker - Tecleo Supersónico",
+      "pill_beneficio": "✓ Respuestas basadas 100% en tus archivos",
+      "capacidades_verificadas": [
+        "análisis y síntesis de notas, PDFs y documentos propios",
+        "respuestas acotadas estrictamente a las fuentes cargadas sin alucinaciones"
+      ],
+      "no_afirmar": [
+        "que puede procesar archivos infinitos al mismo tiempo",
+        "costo o límites de almacenamiento"
+      ],
+      "fuente": "sitio oficial Google NotebookLM",
+      "fecha_verificacion": "2026-10-03",
+      "confianza_dato": "alta"
+    }
+  ],
+
+  "resultado": "Dejás de perder la tarde saltando entre pestañas y te quedás con la respuesta correcta al toque,",
+  "cierre": "¿Sos Team cincuenta pestañas abiertas o Team respuesta en un clic? Contame abajo para no volver a ese..."
+}

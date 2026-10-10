@@ -1,0 +1,50 @@
+{
+  "video": 12,
+  "tema": "Ciberseguridad y Anuncios Falsos en Google",
+  "duracion_objetivo_seg": 28,
+  "tipo_mockup": "ciberseguridad_google_ads",
+  "fondo_dinamico": "ciudad_cyberpunk",
+
+  "cold_open": "Buscás tu banco en Google y tocás el primer enlace sin dudar,",
+  "hook": "Cuidado, podrías estar regalando tus claves en una página clonada,",
+  "problema": "Los estafadores pagan anuncios para ponerse arriba de todo con dominios falsos,",
+
+  "demostracion": [
+    {
+      "herramienta": "Detección de Anuncio Clon",
+      "accion": "Fijate siempre si dice patrocinado y mirá bien la dirección web antes de entrar,",
+      "reaccion_byte": "Alerta Detective",
+      "pill_beneficio": "⚠️ Si dice Patrocinado, mirá la URL",
+      "capacidades_verificadas": [
+        "detección de etiquetas de anuncios patrocinados en buscadores",
+        "inspección visual de dominios sospechosos antes de hacer clic"
+      ],
+      "no_afirmar": [
+        "que Google nunca filtra estafas",
+        "seguridad absoluta e infalible"
+      ],
+      "fuente": "Guías oficiales de ciberseguridad sobre malvertising y phishing",
+      "fecha_verificacion": "2026-10-08",
+      "confianza_dato": "alta"
+    },
+    {
+      "herramienta": "Acceso Orgánico Oficial",
+      "accion": "El enlace oficial está más abajo, sin etiqueta de anuncio y con el dominio real,",
+      "reaccion_byte": "Tranquilidad Total",
+      "pill_beneficio": "✓ Entrá solo al resultado oficial verificado",
+      "capacidades_verificadas": [
+        "diferenciación entre enlace patrocinado y resultado orgánico",
+        "verificación de nombres de dominio institucionales"
+      ],
+      "no_afirmar": [
+        "cero riesgo en internet"
+      ],
+      "fuente": "Buenas prácticas de navegación segura de INCIBE y EFF",
+      "fecha_verificacion": "2026-10-08",
+      "confianza_dato": "alta"
+    }
+  ],
+
+  "resultado": "Mirar la dirección web te salva de dolores de cabeza gigantescos,",
+  "cierre": "¿Alguna vez casi caés en un link trampa de estos? Dejame tu historia abajo"
+}

@@ -1,0 +1,51 @@
+{
+  "video": 13,
+  "tema": "Portal de Noticias: Qué hace realmente hoy la IA",
+  "duracion_objetivo_seg": 28,
+  "tipo_mockup": "noticias_ia_realidad",
+  "fondo_dinamico": "estudio_tech",
+
+  "cold_open": "Muchos creen que la inteligencia artificial es solo pedirle textos a un chat,",
+  "hook": "Pero en el mundo real está pasando algo mucho más grande,",
+  "problema": "La tecnología ya está transformando la ciencia y el trabajo en silencio,",
+
+  "demostracion": [
+    {
+      "herramienta": "Medicina Diagnóstica Asistida",
+      "accion": "En medicina detecta patrones en estudios antes de que los vea el ojo humano,",
+      "reaccion_byte": "Anchor Asombrado",
+      "pill_beneficio": "🔬 Detección y análisis médico de alta precisión",
+      "capacidades_verificadas": [
+        "detección temprana de anomalías en imágenes diagnósticas",
+        "asistencia a especialistas mediante reconocimiento de patrones complejos"
+      ],
+      "no_afirmar": [
+        "reemplazo absoluto de médicos",
+        "diagnóstico 100% infalible"
+      ],
+      "fuente": "Publicaciones en Nature Medicine y avances de modelos biomédicos",
+      "fecha_verificacion": "2026-10-09",
+      "confianza_dato": "alta"
+    },
+    {
+      "herramienta": "Ciencia y Materiales",
+      "accion": "Y en laboratorios predice el clima y descubre materiales en cuestión de horas,",
+      "reaccion_byte": "Anchor Científico",
+      "pill_beneficio": "⚡ Modelos climáticos y descubrimiento de materiales",
+      "capacidades_verificadas": [
+        "predicción meteorológica de alta resolución",
+        "simulación de estructuras cristalinas y síntesis de materiales"
+      ],
+      "no_afirmar": [
+        "control absoluto del clima",
+        "cero supervisión humana en laboratorio"
+      ],
+      "fuente": "Modelos GraphCast y GNoME de Google DeepMind",
+      "fecha_verificacion": "2026-10-09",
+      "confianza_dato": "alta"
+    }
+  ],
+
+  "resultado": "No es una moda pasajera, es la mayor aceleración técnica de nuestra época,",
+  "cierre": "¿En qué área creés que va a impactar más fuerte en los próximos años? Contame abajo"
+}

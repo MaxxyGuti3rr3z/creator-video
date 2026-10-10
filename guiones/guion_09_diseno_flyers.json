@@ -1,0 +1,51 @@
+{
+  "video": 9,
+  "tema": "Diseño de Flyers: Canva y Remove.bg",
+  "duracion_objetivo_seg": 25,
+  "tipo_mockup": "diseno_flyers",
+  "fondo_dinamico": "estudio_creativo",
+
+  "cold_open": "POV, necesitás un flyer urgente para hoy,",
+  "hook": "Dejá de pelear con programas difíciles,",
+  "problema": "Abrís una pantalla en blanco y no sabés ni por dónde arrancar,",
+
+  "demostracion": [
+    {
+      "herramienta": "Canva",
+      "accion": "Canva arma un diseño profesional completo solo con que le describas la idea que tenés,",
+      "reaccion_byte": "Eureka - Bombilla IA",
+      "pill_beneficio": "⚡ De una simple idea a flyer listo",
+      "capacidades_verificadas": [
+        "generación asistida de plantillas y layouts con Magic Design",
+        "edición rápida de textos, colores y tipografías en línea"
+      ],
+      "no_afirmar": [
+        "que reemplaza a un equipo de branding corporativo complejo",
+        "precios o limitaciones de planes Pro"
+      ],
+      "fuente": "sitio oficial Canva Magic Design",
+      "fecha_verificacion": "2026-10-05",
+      "confianza_dato": "alta"
+    },
+    {
+      "herramienta": "Remove.bg",
+      "accion": "Y Remove.bg le saca el fondo a cualquier foto en un instante para que calce perfecta,",
+      "reaccion_byte": "Mago Zen - Todo en Orden",
+      "pill_beneficio": "✓ Recorte automático con fondo transparente",
+      "capacidades_verificadas": [
+        "detección de sujetos y remoción de fondo basada en IA",
+        "exportación instantánea en formato PNG transparente"
+      ],
+      "no_afirmar": [
+        "resolución ilimitada en versión sin registro",
+        "cifras milimétricas de precisión"
+      ],
+      "fuente": "sitio oficial Remove.bg",
+      "fecha_verificacion": "2026-10-05",
+      "confianza_dato": "alta"
+    }
+  ],
+
+  "resultado": "Te queda una pieza impecable en minutos sin gastar de más ni perderte la tarde armándolo vos mismo,",
+  "cierre": "¿Vos sos Team Canva rápido o Team Photoshop a mano? Contame abajo"
+}
