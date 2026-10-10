@@ -11,6 +11,7 @@ videos/
 _archivo/
 assets_animaciones_byte/
 test_artifacts/
+pruebas/demo_assets/
 
 # Binarios de render (se regeneran con el pipeline)
 assets/fondos/

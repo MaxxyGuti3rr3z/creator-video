@@ -492,118 +492,6 @@ def exportar_tabla_tiempos_palabras(
 
 
 # ---------------------------------------------------------------------------
-# MEJORA 1: Mockup genérico dibujado por código (PIL)
-# ---------------------------------------------------------------------------
-
-def generar_mockup_generico(
-    tipo_escena: str,
-    elementos: Optional[Any] = None,
-    paleta: Optional[Dict[str, Any]] = None,
-    ancho: int = 480,
-    alto: int = 620,
-    ruta_salida: Optional[Union[str, Path]] = None
-) -> Any:
-    """
-    Dibuja con PIL un mockup simplificado de pantalla/ventana genérica o widget flotante:
-    - 'problema': Ventana con N líneas apiladas densas en tonos grises/rojizos apagados (saturación).
-    - 'solucion': Ventana con líneas atenuadas y 2-3 destacadas en cyan (#00E5FF) con checks.
-    - 'alerta_inbox': Banner flotante de alerta 'Bandeja saturada (99+ correos sin leer)'.
-    - 'chip_ia': Tarjeta / chip flotante de 'IA resumiendo correos... ✓'.
-    - 'chip_filtro': Tarjeta / chip flotante de 'Filtro inteligente activo ✓'.
-    - 'inbox_zero': Tarjeta celebratoria 'Inbox Zero alcanzado ✨'.
-    - Colores: paleta fija de Byte (fondos oscuros, #00E5FF, #FF6F61).
-    """
-    from PIL import Image, ImageDraw
-
-    colores_defecto = {
-        "fondo_ventana": (18, 22, 38, 235),      # Fondo oscuro tech translúcido
-        "borde_ventana": (55, 68, 105, 220),     # Borde suave
-        "barra_superior": (26, 32, 54, 240),     # Barra superior
-        "punto_1": (255, 111, 97, 210),          # #FF6F61 Coral
-        "punto_2": (240, 196, 70, 210),          # Amarillo cálido suave
-        "punto_3": (0, 229, 255, 210),           # #00E5FF Cyan
-        "barra_busqueda": (36, 44, 72, 180),
-        "cyan_destacado": (0, 229, 255, 255),    # #00E5FF
-        "cyan_glow": (0, 229, 255, 35),
-        "rojo_apagado": (210, 85, 80, 200),      # #D25550 saturación
-        "gris_linea": (95, 105, 130, 180),
-        "gris_apagado": (65, 72, 92, 110),
-    }
-
-    colores = {**colores_defecto, **(paleta or {})}
-    tipo = tipo_escena.lower().strip()
-    try:
-        from generar_animacion_solucion import (
-            renderizar_frame_cliente_correo,
-            renderizar_mockup_inbox_zero,
-            renderizar_chip_herramienta
-        )
-        if tipo in ("alerta_inbox", "alerta", "hook_widget"):
-            img = renderizar_chip_herramienta("alerta_inbox", ancho, alto)
-        elif tipo in ("chip_ia", "shortwave", "widget_ia"):
-            img = renderizar_chip_herramienta("shortwave", ancho, alto)
-        elif tipo in ("chip_filtro", "sanebox", "widget_filtro"):
-            img = renderizar_chip_herramienta("sanebox", ancho, alto)
-        elif tipo in ("inbox_zero", "cierre_widget", "cierre"):
-            img = renderizar_chip_herramienta("inbox_zero", ancho, alto)
-        elif tipo in ("problema", "punto_1", "punto1"):
-            img = renderizar_frame_cliente_correo(
-                ancho=ancho,
-                alto=alto,
-                badge_texto="1,420 sin leer",
-                badge_color=(239, 68, 68),
-                cursor_pos=(ancho - 80, 220),
-                cursor_ripple=0,
-                boton_activo=False,
-                desplazamiento_filtrados=0.0,
-                opacidad_filtrados=1.0,
-                destacar_importantes=False,
-                filas_colapsadas=False
-            )
-        elif tipo in ("solucion", "punto_2", "punto2"):
-            img = renderizar_frame_cliente_correo(
-                ancho=ancho,
-                alto=alto,
-                badge_texto="3 sin leer",
-                badge_color=(0, 229, 255),
-                cursor_pos=None,
-                cursor_ripple=0,
-                boton_activo=True,
-                desplazamiento_filtrados=1.0,
-                opacidad_filtrados=0.0,
-                destacar_importantes=True,
-                filas_colapsadas=True
-            )
-        elif tipo in ("inbox_zero_ventana", "mailflow_zero"):
-            img = renderizar_mockup_inbox_zero(ancho=ancho, alto=alto)
-        else:
-            img = renderizar_frame_cliente_correo(
-                ancho=ancho,
-                alto=alto,
-                badge_texto="1,420 sin leer",
-                badge_color=(239, 68, 68),
-                cursor_pos=None,
-                cursor_ripple=0,
-                boton_activo=False,
-                desplazamiento_filtrados=0.0,
-                opacidad_filtrados=1.0,
-                destacar_importantes=False,
-                filas_colapsadas=False
-            )
-    except Exception as e:
-        logger.warning(f"Fallback en generar_mockup_generico: {e}")
-        img = Image.new("RGBA", (ancho, alto), (255, 255, 255, 255))
-
-    if ruta_salida:
-        p_out = Path(ruta_salida).resolve()
-        p_out.parent.mkdir(parents=True, exist_ok=True)
-        img.save(p_out, format="PNG")
-        logger.info(f"Mockup guardado en: {p_out}")
-
-    return img
-
-
-# ---------------------------------------------------------------------------
 # TAREA 2: Ensamblar video con FFmpeg (MEJORA 2: Dos capas + Paneo real)
 # ---------------------------------------------------------------------------
 
@@ -868,17 +756,10 @@ def generar_fondo_texturado(
     fondo = Image.alpha_composite(base, blobs)
     fondo = Image.alpha_composite(fondo, circuits)
 
-    # Composición de mockups y widgets de alta fidelidad con cliente de correo MailFlow
-    try:
-        from generar_animacion_solucion import generar_fondo_texturado_realista
-        ruta = generar_fondo_texturado_realista(indice_escena, ruta_salida, ancho, alto)
-        logger.info(f"Fondo texturado realista escena {indice_escena} guardado en: {ruta}")
-        return str(ruta)
-    except Exception as e:
-        logger.warning(f"Error generando fondo realista para escena {indice_escena}: {e}. Guardando base.")
-        fondo.save(ruta_salida, format="PNG")
-        logger.info(f"Fondo texturado escena {indice_escena} guardado en: {ruta_salida}")
-        return str(ruta_salida)
+    # Guardado del fondo base compuesto (degradado + blobs + circuito Byte)
+    fondo.save(ruta_salida, format="PNG")
+    logger.info(f"Fondo texturado escena {indice_escena} guardado en: {ruta_salida}")
+    return str(ruta_salida)
 
 
 def ensamblar_video(
@@ -933,42 +814,9 @@ def ensamblar_video(
         dir_fondos.mkdir(parents=True, exist_ok=True)
         rutas_fondos = []
         for i in range(num_clips):
-            if i == 1:
-                # FASE 2: Fondo interactivo animado para escena 1 (Shortwave lectura + resumen IA)
-                p_video_1 = dir_fondos / "fondo_escena_1_shortwave.mp4"
-                dur_escena_1 = (segmentos[1]["fin"] - segmentos[1]["inicio"] + fade_duration) if len(segmentos) > 1 else 12.5
-                if not p_video_1.exists():
-                    try:
-                        from generar_animacion_solucion import generar_video_escena1_shortwave
-                        generar_video_escena1_shortwave(dur_escena_1, p_video_1)
-                    except Exception as e:
-                        logger.warning(f"No se pudo generar video interactivo para escena 1: {e}")
-                if p_video_1.exists():
-                    rutas_fondos.append(p_video_1.resolve())
-                else:
-                    p_fondo = dir_fondos / f"fondo_escena_{i}.png"
-                    generar_fondo_texturado(i, p_fondo)
-                    rutas_fondos.append(p_fondo.resolve())
-            elif i == 2:
-                # FASE 2: Fondo interactivo animado para escena 2 (SaneBox filtro)
-                p_video_2 = dir_fondos / "fondo_escena_2_interactivo.mp4"
-                dur_escena_2 = (segmentos[2]["fin"] - segmentos[2]["inicio"] + fade_duration) if len(segmentos) > 2 else 12.5
-                if not p_video_2.exists():
-                    try:
-                        from generar_animacion_solucion import generar_video_escena2_interactiva
-                        generar_video_escena2_interactiva(dur_escena_2, p_video_2)
-                    except Exception as e:
-                        logger.warning(f"No se pudo generar video interactivo para escena 2: {e}")
-                if p_video_2.exists():
-                    rutas_fondos.append(p_video_2.resolve())
-                else:
-                    p_fondo = dir_fondos / f"fondo_escena_{i}.png"
-                    generar_fondo_texturado(i, p_fondo)
-                    rutas_fondos.append(p_fondo.resolve())
-            else:
-                p_fondo = dir_fondos / f"fondo_escena_{i}.png"
-                generar_fondo_texturado(i, p_fondo)
-                rutas_fondos.append(p_fondo.resolve())
+            p_fondo = dir_fondos / f"fondo_escena_{i}.png"
+            generar_fondo_texturado(i, p_fondo)
+            rutas_fondos.append(p_fondo.resolve())
     else:
         rutas_fondos = [Path(f).resolve() for f in fondos]
 
