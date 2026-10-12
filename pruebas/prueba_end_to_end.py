@@ -2,6 +2,16 @@ r"""
 prueba_end_to_end.py
 --------------------
 Pipeline de prueba de extremo a extremo con el guion real de "Bandeja de entrada":
+
+Uso:
+    python pruebas/prueba_end_to_end.py [ruta_guion.json] [--forzar-fondos]
+
+    --forzar-fondos   Regenera los MP4 de intermedios/fondos/ aunque existan.
+                      Obligatorio tras editar arquetipos/configs de planos:
+                      si no, el pipeline reusa la caché de fondos y el video
+                      final queda con el aspecto ANTERIOR a los cambios
+                      (el audio SÍ usa su propia caché y no gasta créditos).
+
 1. Guion real estructurado.
 2. Audio y alignment (ElevenLabs with timestamps o generador de alta fidelidad).
    DIAGNÓSTICO 1: Impresión completa de 'characters' y confirmación visual de caracteres españoles (á,é,í,ó,ú,ñ,¿,¡).
@@ -691,8 +701,10 @@ def cargar_guion(ruta_arg: Optional[Union[str, Path]] = None) -> Tuple[Dict[str,
     """
     import sys
     if ruta_arg is None:
-        if len(sys.argv) > 1 and not sys.argv[1].startswith("-"):
-            ruta_arg = sys.argv[1]
+        # Primer argumento posicional (ignora flags --xxx como --forzar-fondos)
+        posicionales = [a for a in sys.argv[1:] if not a.startswith("-")]
+        if posicionales:
+            ruta_arg = posicionales[0]
         elif (DIR_GUIONES / "guion_03_tareas.json").exists():
             ruta_arg = DIR_GUIONES / "guion_03_tareas.json"
         elif (DIR_GUIONES / "guion_02_reuniones.json").exists():
@@ -735,6 +747,10 @@ def main():
     dir_intermedios = v_paths["intermedios"]
     dir_final = v_paths["final"]
 
+    # Flags CLI: --forzar-fondos regenera los MP4 de fondo aunque existan en caché
+    # (necesario tras editar planos/configs; el audio sigue usando su caché normal)
+    forzar_fondos = "--forzar-fondos" in sys.argv
+
     mockup_sugerido = guion.get("mockup_sugerido", "bandeja_correo")
 
     print(f"\n[CONFIGURACIÓN DE PRODUCCIÓN]")
@@ -742,7 +758,8 @@ def main():
     print(f"  • Carpeta proyecto: {dir_proyecto.resolve()}")
     print(f"  • Entrada:          {dir_entrada.resolve()}")
     print(f"  • Intermedios:      {dir_intermedios.resolve()}")
-    print(f"  • Video de salida:  {dir_final / f'video_{nombre_base}.mp4'}\n")
+    print(f"  • Video de salida:  {dir_final / f'video_{nombre_base}.mp4'}")
+    print(f"  • Fondos:           {'FORZADOS (--forzar-fondos)' if forzar_fondos else 'caché si existen'}\n")
 
     bloques = construir_bloques_narrativos(guion)
     texto_completo = concatenar_texto_completo(bloques)
@@ -850,8 +867,9 @@ def main():
 
     cfg_fondos = config_de_fondos(nombre_base, mockup_sugerido)
     if cfg_fondos is not None:
-        print(f"\n[MOCKUP] Generando fondos de {cfg_fondos.etiqueta_fondos}...")
-        rutas_fondos = generar_fondos_del_video(cfg_fondos, segmentos_reales, dir_fondos)
+        modo = "FORZADO" if forzar_fondos else "caché si existen"
+        print(f"\n[MOCKUP] Generando fondos de {cfg_fondos.etiqueta_fondos} ({modo})...")
+        rutas_fondos = generar_fondos_del_video(cfg_fondos, segmentos_reales, dir_fondos, forzar=forzar_fondos)
 
 
     # -------------------------------------------------------------
