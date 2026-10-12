@@ -1,0 +1,56 @@
+{
+  "video": 14,
+  "tema": "Cuánta agua consume la IA: desmintiendo el pánico viral",
+  "duracion_objetivo_seg": 37,
+  "tipo_mockup": "agua_ia",
+  "mockup_sugerido": "agua_ia",
+  "fondo_dinamico": "ciudad_cyberpunk",
+
+  "cold_open": "Dicen que cada pregunta a la IA se bebe una botella de agua,",
+  "hook": "Y por eso todos lo comparten sin parar,",
+  "problema": "Ese número viene de 2023, del modelo GPT-3, en centros de datos de Estados Unidos,",
+
+  "demostracion": [
+    {
+      "herramienta": "Gemini de Google (medición oficial 2025)",
+      "accion": "Google midió su Gemini en 2025, y una consulta típica consume cinco gotas de agua,",
+      "reaccion_byte": "Byte desmitifica con datos",
+      "pill_beneficio": "💧 Cinco gotas de agua por consulta de texto",
+      "capacidades_verificadas": [
+        "0,26 mililitros de agua por consulta mediana de texto (equivalente a cinco gotas)",
+        "0,24 Wh de energía, menos que ver nueve segundos de televisión",
+        "33 veces menos energía que hace 12 meses en la misma medición"
+      ],
+      "no_afirmar": [
+        "que todas las IAs consumen solo cinco gotas",
+        "que el impacto ambiental de la IA es nulo",
+        "que la medición de Google aplica a imágenes o video"
+      ],
+      "fuente": "Google, arXiv:2508.15734 (Measuring the Environmental Impact of Delivering AI at Google Scale)",
+      "fecha_verificacion": "2026-10-11",
+      "confianza_dato": "alta"
+    },
+    {
+      "herramienta": "GPT-3 de OpenAI/Microsoft (el origen del dato viral)",
+      "accion": "Entrenar ese GPT-3 sí evaporó 700 mil litros, y las imágenes pesan mucho más que el texto,",
+      "reaccion_byte": "Byte matiza el contexto",
+      "pill_beneficio": "⚠️ El costo real existe, pero se mide con contexto",
+      "capacidades_verificadas": [
+        "700 mil litros de agua dulce evaporados en el entrenamiento de GPT-3 en centros de datos de Estados Unidos",
+        "5,4 millones de litros de huella hídrica total del entrenamiento de GPT-3",
+        "una botella de 500 mililitros cada 10 a 50 respuestas medias, según la estimación de 2023"
+      ],
+      "no_afirmar": [
+        "que entrenar modelos no consume agua",
+        "que el pánico viral nació de la nada",
+        "que la cifra de 2023 describe a los modelos actuales"
+      ],
+      "fuente": "Making AI Less 'Thirsty', Li et al., Communications of the ACM 2025 (arXiv:2304.03271)",
+      "fecha_verificacion": "2026-10-11",
+      "confianza_dato": "alta"
+    }
+  ],
+
+  "resultado": "Microsoft ya diseña centros que ahorran 125 millones de litros de agua al año,",
+  "cierre": "Si alguien te mandó el pánico, compartile este video con los datos reales, y contame si te lo creíste"
+}

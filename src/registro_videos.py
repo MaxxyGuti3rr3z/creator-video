@@ -179,6 +179,19 @@ _SPRITES_13 = _sprites(
     ("cierre", "cierre_saltando_transparente.png"),
 )
 
+# Video 14 (agua e IA): rotación de poses (estresado, cortocircuito, feliz)
+# sin repetir byte_agotado; sprites dedicados del video 13 para el bloque medio
+_SPRITES_14 = _sprites(
+    DIR_BYTE_TRANSPARENTES,
+    ("cold_open", "hook_estresado_transparente.png"),
+    ("hook", "byte_cortocircuito_transparente.png"),
+    ("problema", "punto_1_guion_13_noticias_ia_realidad_transparente.png"),
+    ("punto_1", "punto1_feliz_transparente.png"),
+    ("punto_2", "punto_2_guion_13_noticias_ia_realidad_transparente.png"),
+    ("resultado", "byte_computadora_feliz_transparente.png"),
+    ("cierre", "cierre_guion_13_noticias_ia_realidad_transparente.png"),
+)
+
 
 # --- Catálogo --------------------------------------------------------------
 
@@ -343,15 +356,28 @@ CONFIGS: Tuple[ConfigVideo, ...] = (
         claves_sprites=("13", "noticias"),
         cinematico=True,
     ),
+    ConfigVideo(
+        id="14",
+        claves=("14", "agua"),
+        claves_mockup=("agua_ia", "agua"),
+        nombre_base=None,          # se usa el stem del guion (nombres de sprites/subtítulos)
+        carpeta="video_14_agua_ia",
+        claves_fondos=("14", "agua"),
+        generador_fondos="generar_video_interactivo_agua_ia",
+        etiqueta_fondos="Agua e IA (Video 14 - desmintiendo el pánico)",
+        sprites=_SPRITES_14,
+        claves_sprites=("14", "agua"),
+        cinematico=True,
+    ),
 )
 
 _POR_ID = {cfg.id: cfg for cfg in CONFIGS}
 
 # Orden histórico de cada bloque (replica el if/elif original; 12/13 ahora
-# tienen carpeta canónica explícita en su config)
-_ORDEN_CARPETA = ("13", "12", "03", "02", "04", "05", "06", "07", "08", "10", "11", "09", "01")
-_ORDEN_SPRITES = ("13", "12", "11", "10", "09", "08", "07", "04", "05", "06", "03", "02", "01")
-_ORDEN_FONDOS = ("03", "04", "02", "05", "06", "07", "08", "09", "10", "11", "12", "13")
+# tienen carpeta canónica explícita en su config; 14 se agrega al frente)
+_ORDEN_CARPETA = ("14", "13", "12", "03", "02", "04", "05", "06", "07", "08", "10", "11", "09", "01")
+_ORDEN_SPRITES = ("14", "13", "12", "11", "10", "09", "08", "07", "04", "05", "06", "03", "02", "01")
+_ORDEN_FONDOS = ("14", "03", "04", "02", "05", "06", "07", "08", "09", "10", "11", "12", "13")
 
 
 def _coincide(cfg: ConfigVideo, texto: str, claves: Tuple[str, ...],

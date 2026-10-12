@@ -40,8 +40,11 @@ def _set(base, *pares):
 # ---------------------------------------------------------------------------
 
 def _vieja_carpeta(stem: str):
-    # 12/13 pasaron del fallback video_<stem> a carpeta canónica explícita
-    if "13" in stem or "noticias" in stem:
+    # 14 es nuevo (carpeta canónica desde su nacimiento); 12/13 pasaron del
+    # fallback video_<stem> a carpeta canónica explícita
+    if "14" in stem or "agua" in stem:
+        return stem, "video_14_agua_ia"
+    elif "13" in stem or "noticias" in stem:
         return stem, "video_13_noticias_ia_realidad"
     elif "12" in stem or "ciberseguridad" in stem or "google_ads" in stem:
         return stem, "video_12_ciberseguridad_google_ads"
@@ -71,7 +74,18 @@ def _vieja_carpeta(stem: str):
 
 
 def _viejos_sprites(nombre_base, mockup_sugerido):
-    if "13" in nombre_base or "noticias" in nombre_base:
+    if "14" in nombre_base or "agua" in nombre_base:
+        return _set(
+            T,
+            ("cold_open", "hook_estresado_transparente.png"),
+            ("hook", "byte_cortocircuito_transparente.png"),
+            ("problema", "punto_1_guion_13_noticias_ia_realidad_transparente.png"),
+            ("punto_1", "punto1_feliz_transparente.png"),
+            ("punto_2", "punto_2_guion_13_noticias_ia_realidad_transparente.png"),
+            ("resultado", "byte_computadora_feliz_transparente.png"),
+            ("cierre", "cierre_guion_13_noticias_ia_realidad_transparente.png"),
+        )
+    elif "13" in nombre_base or "noticias" in nombre_base:
         return _set(
             T,
             ("cold_open", "cierre_transparente.png"),
@@ -193,10 +207,14 @@ def _viejo_overlay(nombre_base) -> bool:
         or "12" in nombre_base or "ciberseguridad" in nombre_base
         or "google_ads" in nombre_base
         or "13" in nombre_base or "noticias" in nombre_base
+        or "14" in nombre_base or "agua" in nombre_base
     )
 
 
 def _viejo_generador(nombre_base, mockup_sugerido):
+    if ("14" in nombre_base or "agua" in nombre_base
+            or mockup_sugerido in ["agua_ia", "agua"]):
+        return "generar_video_interactivo_agua_ia"
     if mockup_sugerido == "gestor_tareas" or ("03" in nombre_base and "04" not in nombre_base):
         return "generar_video_interactivo_tareas"
     if "04" in nombre_base or "correo" in nombre_base or mockup_sugerido == "asistente_correo":
@@ -239,7 +257,7 @@ MOCKUPS = [
     "atencion_clientes", "excel_reportes", "dinamico_con_memes", "busqueda_investigacion",
     "diseno_flyers", "flyers", "cotizacion_automatica", "cotizacion",
     "cincuenta_archivos", "archivos", "ciberseguridad_google_ads", "ciberseguridad",
-    "noticias_ia_realidad", "noticias", "bandeja_correo", None,
+    "noticias_ia_realidad", "noticias", "agua_ia", "agua", "bandeja_correo", None,
 ]
 
 
@@ -307,7 +325,7 @@ class TestEquivalenciaRegistro(unittest.TestCase):
                 fn = obtener_generador(cfg.generador_fondos)
                 self.assertTrue(callable(fn), f"{cfg.generador_fondos} no es callable")
 
-    def test_catalogo_cubre_los_12_guiones(self):
+    def test_catalogo_cubre_los_guiones(self):
         """Cada guion del catálogo cae en una carpeta esperada de videos/."""
         esperado = {
             "guion_02_reuniones": "video_02_reuniones",
@@ -322,6 +340,7 @@ class TestEquivalenciaRegistro(unittest.TestCase):
             "guion_11_cincuenta_archivos": "video_11_cincuenta_archivos",
             "guion_12_ciberseguridad_google_ads": "video_12_ciberseguridad_google_ads",
             "guion_13_noticias_ia_realidad": "video_13_noticias_ia_realidad",
+            "guion_14_agua_ia": "video_14_agua_ia",
         }
         for p in sorted(DIR_GUIONES.glob("guion_*.json")):
             self.assertIn(p.stem, esperado, f"guion sin predecir: {p.name}")

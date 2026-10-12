@@ -99,6 +99,7 @@ from src.mockups.planos.wrappers import (
     CONFIGS_CINCUENTA_ARCHIVOS,
     CONFIGS_CIBERSEGURIDAD_GOOGLE_ADS,
     CONFIGS_NOTICIAS_IA_REALIDAD,
+    CONFIGS_AGUA_IA,
     generar_video_interactivo_atencion_clientes,
     generar_video_interactivo_excel_reportes,
     generar_video_interactivo_busqueda_investigacion,
@@ -107,6 +108,7 @@ from src.mockups.planos.wrappers import (
     generar_video_interactivo_cincuenta_archivos,
     generar_video_interactivo_ciberseguridad_google_ads,
     generar_video_interactivo_noticias_ia_realidad,
+    generar_video_interactivo_agua_ia,
 )
 
 __all__ = [
@@ -174,6 +176,7 @@ __all__ = [
     "CONFIGS_CINCUENTA_ARCHIVOS",
     "CONFIGS_CIBERSEGURIDAD_GOOGLE_ADS",
     "CONFIGS_NOTICIAS_IA_REALIDAD",
+    "CONFIGS_AGUA_IA",
     "generar_video_interactivo_atencion_clientes",
     "generar_video_interactivo_excel_reportes",
     "generar_video_interactivo_busqueda_investigacion",
@@ -182,6 +185,7 @@ __all__ = [
     "generar_video_interactivo_cincuenta_archivos",
     "generar_video_interactivo_ciberseguridad_google_ads",
     "generar_video_interactivo_noticias_ia_realidad",
+    "generar_video_interactivo_agua_ia",
     "dibujar_icono_alerta",
     "dibujar_icono_cruz",
     "dibujar_icono_candado",

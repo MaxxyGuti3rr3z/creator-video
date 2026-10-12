@@ -29,6 +29,7 @@ from .director_escena import (
     generar_video_interactivo_cincuenta_archivos,
     generar_video_interactivo_ciberseguridad_google_ads,
     generar_video_interactivo_noticias_ia_realidad,
+    generar_video_interactivo_agua_ia,
 )
 from .plantillas import PLANTILLAS, ALIAS_ESCENAS, obtener_plantilla
 
@@ -51,6 +52,7 @@ __all__ = [
     "generar_video_interactivo_cincuenta_archivos",
     "generar_video_interactivo_ciberseguridad_google_ads",
     "generar_video_interactivo_noticias_ia_realidad",
+    "generar_video_interactivo_agua_ia",
     "generar_video_cinematico_escena",
     "renderizar_escena_por_arquetipo",
     "PALETAS_EMOCIONALES",

@@ -707,3 +707,141 @@ def generar_video_interactivo_noticias_ia_realidad(
         ancho=ancho,
         alto=alto
     )
+
+
+# ---------------------------------------------------------------------------
+# Configuración de Escenas para Video 14 (Agua e IA: Desmintiendo el Pánico)
+# ---------------------------------------------------------------------------
+CONFIGS_AGUA_IA = {
+    "cold_open": ("PLANO_HERO_CAOS", {
+        "estilo_fondo": "ciudad_cyberpunk",
+        "badge": "EL MITO QUE CORRE EN TODOS LADOS",
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "hook_estresado_transparente.png",
+        "elementos": [
+            {"x": 60, "y": 250, "w": 340, "h": 150, "rot": -9, "tit": "Botella por pregunta", "sub": "Titular viral de hoy", "col": (225, 29, 72)},
+            {"x": 660, "y": 240, "w": 340, "h": 150, "rot": 11, "tit": "¿La IA seca ríos?", "sub": "Videos con pánico", "col": (225, 29, 72)},
+            {"x": 50, "y": 1200, "w": 340, "h": 150, "rot": 7, "tit": "700 mil litros", "sub": "Dato sin contexto", "col": (245, 158, 11)},
+            {"x": 670, "y": 1220, "w": 340, "h": 150, "rot": -7, "tit": "¡No preguntes!", "sub": "Comentarios asustados", "col": (225, 29, 72)},
+        ]
+    }),
+    "hook": ("PLANO_HERO_CAOS", {
+        "estilo_fondo": "ciudad_cyberpunk",
+        "badge": "¿UNA BOTELLA DE AGUA POR PREGUNTA?",
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "byte_cortocircuito_transparente.png",
+        "elementos": [
+            {"x": 60, "y": 250, "w": 340, "h": 150, "rot": -8, "tit": "¿Es verdad?", "sub": "La pregunta de todos", "col": (245, 158, 11)},
+            {"x": 660, "y": 240, "w": 340, "h": 150, "rot": 10, "tit": "Todos lo comparten", "sub": "Sin mirar la fuente", "col": (225, 29, 72)},
+            {"x": 50, "y": 1200, "w": 340, "h": 150, "rot": 7, "tit": "500 ml", "sub": "Cada 10 respuestas", "col": (225, 29, 72)},
+            {"x": 670, "y": 1220, "w": 340, "h": 150, "rot": -7, "tit": "Vamos a los datos", "sub": "Sin pánico y sin negar", "col": (14, 165, 233)},
+        ]
+    }),
+    "problema": ("PLANO_HERO_CAOS", {
+        "estilo_fondo": "ciudad_cyberpunk",
+        "badge": "EL DATO QUE NADIE CONTEXTO",
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "punto_1_guion_13_noticias_ia_realidad_transparente.png",
+        "elementos": [
+            {"x": 60, "y": 250, "w": 340, "h": 150, "rot": -9, "tit": "Estudio de 2023", "sub": "Making AI Less Thirsty", "col": (245, 158, 11)},
+            {"x": 660, "y": 240, "w": 340, "h": 150, "rot": 11, "tit": "Modelo GPT-3", "sub": "De 2020, ya superado", "col": (245, 158, 11)},
+            {"x": 50, "y": 1200, "w": 340, "h": 150, "rot": 7, "tit": "700 mil litros", "sub": "Solo del entrenamiento", "col": (225, 29, 72)},
+            {"x": 670, "y": 1220, "w": 340, "h": 150, "rot": -7, "tit": "Centros en EE UU", "sub": "Depende del clima local", "col": (14, 165, 233)},
+        ]
+    }),
+    "punto_1": ("PLANO_SPLIT_BEFORE_AFTER", {
+        "estilo_fondo": "ciudad_cyberpunk",
+        "antes_tag": "EL PÁNICO",
+        "antes_tit": "Lo que dice el viral",
+        "antes_items": [
+            "• Una botella de 500 ml cada 10 respuestas",
+            "• Dato de 2023 sobre el modelo GPT-3",
+            "• Estimado en centros de datos de EE UU"
+        ],
+        "separador": "LO MEDIDO EN 2025",
+        "despues_tag": "LA MEDICIÓN",
+        "despues_tit": "Gemini de Google, texto típico",
+        "pills_despues": [
+            ("0,26 mL", "Cinco gotas de agua", (14, 165, 233), (240, 249, 255)),
+            ("0,24 Wh", "Menos que 9 s de tele", (16, 185, 129), (236, 253, 245)),
+            ("33× menos", "Energía en 12 meses", (16, 185, 129), (236, 253, 245))
+        ],
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "punto1_feliz_transparente.png",
+    }),
+    "punto_2": ("PLANO_SHOWCASE_PANORAMICO", {
+        "estilo_fondo": "ciudad_cyberpunk",
+        "header": "EL MATIZ • NI PÁNICO NI NEGACIÓN",
+        "badge": "Cifras oficiales",
+        "titulo": "Lo que sí es real",
+        "subtitulo": "El costo existe, pero se mide, se publica y se baja",
+        "items": [
+            ("Entrenamiento", "GPT-3 evaporó 700 mil litros", (225, 29, 72), (255, 241, 242)),
+            ("Imágenes y video", "Pesan mucho más que el texto", (245, 158, 11), (255, 251, 235)),
+            ("Agua local", "46% de Microsoft en zonas con estrés", (37, 99, 235), (239, 246, 255))
+        ],
+        "footer": "Fuente: Google 2025 y reportes de Microsoft",
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "punto_2_guion_13_noticias_ia_realidad_transparente.png",
+    }),
+    "resultado": ("PLANO_DECK_3D", {
+        "estilo_fondo": "ciudad_cyberpunk",
+        "titulo": "La industria ya responde",
+        "subtitulo": "Diseños que ahorran millones de litros por planta",
+        "cards": [
+            {"x_off": -180, "y": 380, "tit": "Microsoft", "desc": "Cero agua de enfriamiento", "rot": -7, "col": (37, 99, 235)},
+            {"x_off": 180, "y": 380, "tit": "Circuito cerrado", "desc": "Enfriamiento a nivel de chip", "rot": 7, "col": (124, 58, 237)},
+            {"x_off": 0, "y": 360, "tit": "125 millones", "desc": "de litros ahorrados al año", "rot": 0, "col": (16, 185, 129)}
+        ],
+        "pills": [
+            ("Diseño nuevo", (16, 185, 129)),
+            ("Menos litros", (14, 165, 233)),
+            ("Datos abiertos", (124, 58, 237))
+        ],
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "byte_computadora_feliz_transparente.png",
+    }),
+    "cierre": ("PLANO_HOST_COMMUNITY", {
+        "estilo_fondo": "ciudad_cyberpunk",
+        "pregunta_tit": "CTA: COMPARTILO CON EL ASUSTADO",
+        "pregunta_l1": "¿Te sorprendieron los datos",
+        "pregunta_l2": "o ya desconfiabas del viral?",
+        "opciones": [
+            ("A", "Cinco gotas, me voló la cabeza", (16, 185, 129), (236, 253, 245)),
+            ("B", "Yo ya desconfiaba del viral", (37, 99, 235), (239, 246, 255)),
+            ("C", "Se lo mando a mi grupo familiar", (124, 58, 237), (245, 243, 255)),
+        ],
+        "callout": "Mandá este video a tu amigo asustado",
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "cierre_guion_13_noticias_ia_realidad_transparente.png",
+    }),
+}
+
+
+def generar_video_interactivo_agua_ia(
+    tipo_escena: str,
+    duracion_segundos: float,
+    ruta_salida: Union[str, Path],
+    fps: int = 30,
+    ancho: int = 1080,
+    alto: int = 1920
+) -> Path:
+    """Wrapper para generar videos de fondo interactivos de Video 14 (Agua e IA: desmintiendo el pánico)."""
+    mapa = {
+        "cold_open": "cold_open",
+        "hook": "hook",
+        "problema": "problema",
+        "escena_problema": "problema",
+        "punto_1": "punto_1",
+        "demostracion_1": "punto_1",
+        "gemini": "punto_1",
+        "punto_2": "punto_2",
+        "demostracion_2": "punto_2",
+        "gpt3": "punto_2",
+        "resultado": "resultado",
+        "cierre": "cierre",
+    }
+    clave = mapa.get(tipo_escena, "cold_open")
+    arquetipo, cfg = CONFIGS_AGUA_IA.get(clave, ("PLANO_HERO_CAOS", {}))
+    return generar_video_cinematico_escena(
+        arquetipo=arquetipo,
+        duracion_segundos=duracion_segundos,
+        ruta_salida=ruta_salida,
+        config=cfg,
+        fps=fps,
+        ancho=ancho,
+        alto=alto
+    )
