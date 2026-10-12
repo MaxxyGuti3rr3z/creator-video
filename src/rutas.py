@@ -71,7 +71,7 @@ def ruta_video(identificador: Union[int, str]) -> Dict[str, Path]:
     else:
         # Buscar por prefijo numérico (ej: 'video_02' matchea 'video_02_reuniones')
         m = re.match(r"(video_\d{2})", id_str)
-        if m:
+        if m and DIR_VIDEOS.is_dir():
             prefijo = m.group(1)
             for d in DIR_VIDEOS.iterdir():
                 if d.is_dir() and d.name.startswith(prefijo):
