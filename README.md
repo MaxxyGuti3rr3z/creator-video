@@ -108,7 +108,7 @@ Para compilar un video completo desde su guion:
 
 > ⚠️ **`prueba_end_to_end.py` no tiene flag `--offline`.** Si el texto no está en la caché de
 > `cache/cache_audio/`, consume créditos de ElevenLabs. Ver `REPORTE_REORGANIZACION.md` §3 antes
-> de ejecutarlo. Para pruebas sin costo usá `demo_ejecucion.py` o los `test_previews_video_XX.py`.
+> de ejecutarlo. Para pruebas sin costo usá `demo_ejecucion.py` o `python pruebas/previews.py 14`.
 
 ```bash
 # Ejecutar con un guion específico (usa la API de ElevenLabs)
@@ -175,19 +175,34 @@ python pruebas/test_registro_videos.py
 # Partición del monolito: módulos src/ + orquestador (19 tests)
 python pruebas/test_pipeline_modulos.py
 
+# Runner de previews: registro y CLI (8 tests, no renderiza)
+python pruebas/test_runner_previews.py
+
 # Ensamble de video (3 tests; ~2.5 min, genera artefactos)
 python pruebas/archivo_pruebas/test_shorts_assembler.py
 ```
 
-**Total: 127 tests en 8 suites**, todos en verde. Además, `python pruebas/test_smoke_planos.py`
+**Total: 135 tests en 9 suites**, todos en verde. Además, `python pruebas/test_smoke_planos.py`
 es un smoke test visual que renderiza los 49 planos y un clip cinematográfico (RC=0 = OK).
+
+### Previews visuales (runner único)
+
+```bash
+python pruebas/previews.py            # lista los scripts disponibles
+python pruebas/previews.py 14         # previews del video 14
+python pruebas/previews.py 09_v2      # variante v2 del video 09
+python pruebas/previews.py --todos    # todas
+```
+
+Renderiza PNG de diagnóstico en `videos/video_XX/intermedios/previews_director/`
+(sin créditos ni pipeline).
 
 ---
 
 ## 📈 Estado del Proyecto
 
 - **14 videos** producidos (catálogo de 13 guiones maestros, `guiones/guion_02..14`).
-- **127 tests** automatizados en 8 suites (+ 1 smoke test visual), todos en verde.
+- **135 tests** automatizados en 9 suites (+ 1 smoke test visual), todos en verde.
 - **5 linters** de calidad cableados al pipeline; validación previa sin gastar créditos.
 - **8.5 / 10** — la nota la bajan dos cosas concretas:
 
