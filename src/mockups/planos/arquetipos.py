@@ -43,7 +43,7 @@ def renderizar_plano_hero_caos(
     """Byte en primer plano rodeado de elementos caóticos flotando sin ventanas de software."""
     cfg = config or {}
     estilo_fondo = cfg.get("estilo_fondo", "ciudad_cyberpunk")
-    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.35, atenuacion_oscura=0.45)
+    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.85, atenuacion_oscura=0.45)
     draw = ImageDraw.Draw(frame)
 
     f_tit = obtener_fuente(34, bold=True)
@@ -69,12 +69,12 @@ def renderizar_plano_hero_caos(
     cfg = config or {}
     badge_txt = cfg.get("badge", "CAOS DE INFORMES Y SLIDES")
 
-    # 2. Elementos temáticos de dolor flotando y rotando (zonas y < 880 e y > 1160)
+    # 2. Elementos temáticos de dolor flotando (solo franja y=250..780, x=100..980)
     elementos = cfg.get("elementos", [
-        {"x": 70, "y": 250, "w": 300, "h": 150, "rot": -10, "tit": "Slide 1 • En blanco", "sub": "Falta formato", "col": (225, 29, 72)},
-        {"x": 680, "y": 240, "w": 310, "h": 150, "rot": 12, "tit": "Slide 2 • Datos rotos", "sub": "Tablas desalineadas", "col": (225, 29, 72)},
-        {"x": 50, "y": 1200, "w": 330, "h": 150, "rot": 7, "tit": "Métricas Q3", "sub": "Sin orden visual", "col": (245, 158, 11)},
-        {"x": 680, "y": 1220, "w": 330, "h": 150, "rot": -7, "tit": "Borrador interminable", "sub": "Horas perdidas", "col": (225, 29, 72)},
+        {"x": 100, "y": 330, "w": 300, "h": 150, "rot": -10, "tit": "Slide 1 • En blanco", "sub": "Falta formato", "col": (225, 29, 72)},
+        {"x": 650, "y": 330, "w": 310, "h": 150, "rot": 12, "tit": "Slide 2 • Datos rotos", "sub": "Tablas desalineadas", "col": (225, 29, 72)},
+        {"x": 100, "y": 600, "w": 330, "h": 150, "rot": 7, "tit": "Métricas Q3", "sub": "Sin orden visual", "col": (245, 158, 11)},
+        {"x": 650, "y": 600, "w": 330, "h": 150, "rot": -7, "tit": "Borrador interminable", "sub": "Horas perdidas", "col": (225, 29, 72)},
     ])
 
     for it in elementos:
@@ -92,12 +92,12 @@ def renderizar_plano_hero_caos(
         el_rot = el_img.rotate(it["rot"], resample=Image.Resampling.BILINEAR, expand=True)
         frame.paste(el_rot, (it["x"], it["y"] + drift_y), el_rot)
 
-    # 3. Título de Alerta Superior (Safe Zone)
+    # 3. Título de Alerta Superior (inicia en y=250, zona muerta 0..240 vacía)
     bbox_b = draw.textbbox((0, 0), badge_txt, font=f_badge)
     alerta_w = max(420, bbox_b[2] - bbox_b[0] + 90)
     alerta_h = 52
     ax = (ancho - alerta_w) // 2
-    ay = 110
+    ay = 250
     draw.rounded_rectangle([ax, ay, ax + alerta_w, ay + alerta_h], radius=26, fill=(225, 29, 72, 235), outline=(254, 205, 211), width=2)
     # Icono de alerta !
     draw.ellipse([ax + 18, ay + 12, ax + 46, ay + 40], fill=(255, 255, 255))
@@ -147,14 +147,14 @@ def renderizar_plano_showcase_panoramico(
     """La diapositiva generada ocupa casi toda la pantalla y Byte aparece en la esquina."""
     cfg = config or {}
     estilo_fondo = cfg.get("estilo_fondo", "ciudad_cyberpunk")
-    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.35, atenuacion_oscura=0.45)
+    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.85, atenuacion_oscura=0.45)
     draw = ImageDraw.Draw(frame)
 
-    # 1. Gran Contenedor Panorámico Showcase (Ocupa 92% del ancho y 50% de alto)
-    sw = int(ancho * 0.92)
-    sh = 720
+    # 1. Gran Contenedor Panorámico Showcase (franja y=250..780, ancho 880 centrado)
+    sw = 880
+    sh = 530
     sx = (ancho - sw) // 2
-    sy = 160
+    sy = 250
 
     # Sombra del showcase
     sombra = Image.new("RGBA", (ancho, alto), (0, 0, 0, 0))
@@ -195,11 +195,11 @@ def renderizar_plano_showcase_panoramico(
 
     # Contenido de la Diapositiva Ejecutiva
     draw.text((sx + 36, sy + 105), tit_principal, fill=(15, 23, 42), font=obtener_fuente(30, bold=True))
-    draw.text((sx + 36, sy + 155), sub_principal, fill=(100, 116, 139), font=obtener_fuente(22, bold=False))
+    draw.text((sx + 36, sy + 155), sub_principal, fill=(100, 116, 139), font=obtener_fuente(24, bold=False))
 
     # 3 Tarjetas de contenido con métricas visuales dentro de la slide
     w_card = (sw - 72 - 32) // max(1, len(items_showcase))
-    h_card = 260
+    h_card = 190
     y_cards = sy + 220
 
     for i, (tit_c, desc_c, col_c, bg_c) in enumerate(items_showcase):
@@ -234,9 +234,9 @@ def renderizar_plano_showcase_panoramico(
             b_rgba = img_b.convert("RGBA")
             bw, bh = 420, 420
             b_rgba = b_rgba.resize((bw, bh), Image.Resampling.LANCZOS)
-            # Ubicado abajo a la derecha asomándose
-            bx = ancho - bw - 20
-            by = alto - bh - 60
+            # Abajo a la derecha con base en y=1650 (zona sagrada de Byte)
+            bx = ancho - bw - 100
+            by = 1650 - bh
             frame.paste(b_rgba, (bx, by), b_rgba)
 
     return frame
@@ -255,7 +255,7 @@ def renderizar_plano_split_before_after(
     """Pantalla dividida dinámica: Antes (aburrido) vs Después (pulido con IA)."""
     cfg = config or {}
     estilo_fondo = cfg.get("estilo_fondo", "ciudad_cyberpunk")
-    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.35, atenuacion_oscura=0.45)
+    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.85, atenuacion_oscura=0.45)
     draw = ImageDraw.Draw(frame)
 
     f_tit = obtener_fuente(26, bold=True)
@@ -278,13 +278,13 @@ def renderizar_plano_split_before_after(
         ("Presentación Lista", "Material impecable para proyectar", (16, 185, 129), (236, 253, 245)),
     ])
 
-    # 1. Dos Tarjetas Gigantes Comparativas (Arriba: Antes / Abajo: Después)
-    card_w = int(ancho * 0.92)
+    # 1. Dos Tarjetas Gigantes Comparativas (Arriba: Antes / Abajo: Después) — franja y=250..780
+    card_w = 880
     card_x = (ancho - card_w) // 2
 
     # TARJETA 1 (ANTES - Manual / Plano)
-    y_antes = 150
-    h_antes = 260
+    y_antes = 250
+    h_antes = 210
     draw.rounded_rectangle([card_x, y_antes, card_x + card_w, y_antes + h_antes], radius=18, fill=(241, 245, 249), outline=(203, 213, 225), width=2)
     # Tag 'ANTES'
     bbox_at = draw.textbbox((0, 0), antes_tag, font=f_badge)
@@ -307,7 +307,7 @@ def renderizar_plano_split_before_after(
 
     # TARJETA 2 (DESPUÉS - Glow-Up con IA)
     y_despues = y_sep + 46
-    h_despues = 300
+    h_despues = 258
     draw.rounded_rectangle([card_x, y_despues, card_x + card_w, y_despues + h_despues], radius=18, fill=(255, 255, 255), outline=(147, 51, 234), width=3)
     # Tag 'DESPUÉS'
     bbox_dt = draw.textbbox((0, 0), despues_tag, font=f_badge)
@@ -318,7 +318,7 @@ def renderizar_plano_split_before_after(
 
     # Badges de Glow-Up con iconos dibujados limpios
     for idx_p, (t_p, d_p, c_p, bg_p) in enumerate(pills_despues[:3]):
-        py = y_despues + 90 + idx_p * 64
+        py = y_despues + 80 + idx_p * 58
         draw.rounded_rectangle([card_x + 24, py, card_x + card_w - 24, py + 54], radius=10, fill=bg_p, outline=(*c_p[:3], 90), width=1)
         # Bullet / chispa
         dibujar_chispa_ia(draw, card_x + 46, py + 27, 7, c_p)
@@ -343,7 +343,7 @@ def renderizar_plano_split_before_after(
             bw, bh = 460, 460
             b_rgba = b_rgba.resize((bw, bh), Image.Resampling.LANCZOS)
             bx = (ancho - bw) // 2
-            by = alto - bh - 50
+            by = 1650 - bh
             frame.paste(b_rgba, (bx, by), b_rgba)
 
     return frame
@@ -362,7 +362,7 @@ def renderizar_plano_deck_3d(
     """Muro o abanico de diapositivas completas con sensación de victoria y alivio."""
     cfg = config or {}
     estilo_fondo = cfg.get("estilo_fondo", "ciudad_cyberpunk")
-    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.35, atenuacion_oscura=0.45)
+    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.85, atenuacion_oscura=0.45)
     draw = ImageDraw.Draw(frame)
 
     f_big = obtener_fuente(34, bold=True)
@@ -379,30 +379,30 @@ def renderizar_plano_deck_3d(
     frame = Image.alpha_composite(frame, aura)
     draw = ImageDraw.Draw(frame)
 
-    # 2. Gran Badge Circular de Victoria
+    # 2. Gran Badge Circular de Victoria (inicia en y=250, zona muerta vacía)
     r_circ = 46
-    draw.ellipse([cx - r_circ - 10, 190 - r_circ - 10, cx + r_circ + 10, 190 + r_circ + 10], fill=(236, 253, 245))
-    draw.ellipse([cx - r_circ, 190 - r_circ, cx + r_circ, 190 + r_circ], fill=(16, 185, 129))
-    dibujar_icono_check(draw, cx - 18, 190 - 20, (255, 255, 255), tam=38, grosor=4)
+    draw.ellipse([cx - r_circ - 10, 310 - r_circ - 10, cx + r_circ + 10, 310 + r_circ + 10], fill=(236, 253, 245))
+    draw.ellipse([cx - r_circ, 310 - r_circ, cx + r_circ, 310 + r_circ], fill=(16, 185, 129))
+    dibujar_icono_check(draw, cx - 18, 310 - 20, (255, 255, 255), tam=38, grosor=4)
 
     cfg = config or {}
     tit_txt = cfg.get("titulo", "¡Presentación 100% Lista!")
     sub_txt = cfg.get("subtitulo", "Material presentable, ordenado y visual para compartir")
     cards_deck = cfg.get("cards", [
-        {"x_off": -180, "y": 380, "tit": "01 • Introducción", "rot": -7, "col": (37, 99, 235)},
-        {"x_off": 180, "y": 380, "tit": "03 • Conclusiones", "rot": 7, "col": (124, 58, 237)},
-        {"x_off": 0, "y": 360, "tit": "02 • Estrategia Q3", "rot": 0, "col": (16, 185, 129)},
+        {"x_off": -180, "y": 500, "tit": "01 • Introducción", "rot": -7, "col": (37, 99, 235)},
+        {"x_off": 180, "y": 500, "tit": "03 • Conclusiones", "rot": 7, "col": (124, 58, 237)},
+        {"x_off": 0, "y": 480, "tit": "02 • Estrategia Q3", "rot": 0, "col": (16, 185, 129)},
     ])
     pills = cfg.get("pills", [("Presentable", (16, 185, 129)), ("Ordenado", (14, 165, 233)), ("Visual", (124, 58, 237))])
 
     # Títulos
     bbox_t = draw.textbbox((0, 0), tit_txt, font=f_big)
     tw = bbox_t[2] - bbox_t[0]
-    draw.text((cx - tw // 2, 260), tit_txt, fill=(255, 255, 255), font=f_big)
+    draw.text((cx - tw // 2, 390), tit_txt, fill=(255, 255, 255), font=f_big)
 
     bbox_s = draw.textbbox((0, 0), sub_txt, font=f_sub)
     sw = bbox_s[2] - bbox_s[0]
-    draw.text((cx - sw // 2, 310), sub_txt, fill=(167, 243, 208), font=f_sub)
+    draw.text((cx - sw // 2, 440), sub_txt, fill=(167, 243, 208), font=f_sub)
 
     # 3. Muro / Abanico 3D de Diapositivas Terminadas
     dw, dh = 320, 200
@@ -415,19 +415,19 @@ def renderizar_plano_deck_3d(
         # Contenido simulado
         d_cd.rounded_rectangle([18, 64, dw - 18, 120], radius=8, fill=(241, 245, 249))
         c_desc = cd.get("desc", "Diseño visual profesional")
-        d_cd.text((26, 78), c_desc, fill=cd["col"], font=obtener_fuente(18, bold=True))
+        d_cd.text((26, 78), c_desc, fill=cd["col"], font=obtener_fuente(20, bold=True))
         dibujar_icono_check(d_cd, dw - 44, dh - 36, cd["col"], tam=16, grosor=3)
 
         c_rot = c_img.rotate(cd["rot"], resample=Image.Resampling.BILINEAR, expand=True)
         pos_x = cx + cd["x_off"] - c_rot.width // 2
         frame.paste(c_rot, (pos_x, cd["y"]), c_rot)
 
-    # 4. Badges de Alivio Cualitativo al pie
+    # 4. Badges de Alivio Cualitativo al pie (y=720..772, dentro de la franja UI)
     pw = 260
     ph = 52
-    y_p = 610
-    gap_p = (int(ancho * 0.92) - pw * 3) // 2
-    start_x = (ancho - int(ancho * 0.92)) // 2
+    y_p = 720
+    gap_p = (880 - pw * 3) // 2
+    start_x = (ancho - 880) // 2
 
     for i, (txt_p, col_p) in enumerate(pills[:3]):
         px = start_x + i * (pw + gap_p)
@@ -446,12 +446,12 @@ def renderizar_plano_deck_3d(
     if p_byte and Path(p_byte).exists():
         with Image.open(p_byte) as img_b:
             b_rgba = img_b.convert("RGBA")
-            bw, bh = 540, 540
+            bw, bh = 510, 510
             b_rgba = b_rgba.resize((bw, bh), Image.Resampling.LANCZOS)
-            # Levita suavemente
-            flotacion = int(8 * math.sin(t_sec * 2.5))
+            # Levita suavemente con base en y=1650 (zona sagrada de Byte)
+            flotacion = int(5 * math.sin(t_sec * 2.5))
             bx = (ancho - bw) // 2
-            by = alto - bh - 60 + flotacion
+            by = 1135 + flotacion
             frame.paste(b_rgba, (bx, by), b_rgba)
 
     return frame
@@ -469,7 +469,7 @@ def renderizar_plano_host_community(
 ) -> Image.Image:
     cfg = config or {}
     estilo_fondo = cfg.get("estilo_fondo", "ciudad_cyberpunk")
-    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.35, atenuacion_oscura=0.45)
+    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.85, atenuacion_oscura=0.45)
     draw = ImageDraw.Draw(frame)
 
     f_tit = obtener_fuente(32, bold=True)
@@ -487,10 +487,10 @@ def renderizar_plano_host_community(
     ])
     txt_com = cfg.get("callout", "Dejámelo en los comentarios")
 
-    # 1. Gran Pregunta Central Superior (Estilo Sticker de TikTok/Instagram)
-    qw = int(ancho * 0.92)
+    # 1. Gran Pregunta Central Superior (Estilo Sticker de TikTok/Instagram) — inicia en y=250
+    qw = 880
     qx = (ancho - qw) // 2
-    qy = 150
+    qy = 250
     qh = 160
     draw.rounded_rectangle([qx, qy, qx + qw, qy + qh], radius=20, fill=(240, 249, 255), outline=(14, 165, 233), width=3)
     dibujar_chispa_ia(draw, qx + 36, qy + 36, 12, (14, 165, 233))
@@ -543,23 +543,21 @@ def renderizar_plano_host_community(
                 bh = 520
                 bw = int(bh / aspect)
             b_resized = b_rgba.resize((bw, bh), Image.Resampling.LANCZOS)
-            # Rebote alegre
+            # Rebote alegre con base en y=1650 (zona sagrada de Byte)
             rebote = int(10 * abs(math.sin(t_sec * 3.0)))
             bx = (ancho - bw) // 2
-            by = alto - bh - 40 - rebote
+            by = 1650 - bh - rebote
             frame.paste(b_resized, (bx, by), b_resized)
 
-    # 4. Indicador hacia los comentarios limpio y elegante
-    f_com = obtener_fuente(22, bold=True)
+    # 4. Única píldora flotante de callout en y=790..860 (franja permitida)
+    f_com = obtener_fuente(30, bold=True)
     bbox_com = draw.textbbox((0, 0), txt_com, font=f_com)
-    cw = bbox_com[2] - bbox_com[0]
+    cw = min(bbox_com[2] - bbox_com[0] + 120, 880)
     cx = (ancho - cw) // 2
-    cy = alto - 75
-    draw.text((cx, cy), txt_com, fill=(255, 255, 255), font=f_com)
-    # Flecha chevron hacia abajo dibujada
-    arr_x = cx + cw + 18
-    arr_y = cy + 10
-    draw.polygon([(arr_x, arr_y), (arr_x + 12, arr_y), (arr_x + 6, arr_y + 8)], fill=(255, 255, 255))
+    cy = 790
+    draw.rounded_rectangle([cx, cy, cx + cw, cy + 70], radius=35, fill=(15, 23, 42, 245), outline=(14, 165, 233), width=2)
+    dibujar_chispa_ia(draw, cx + 34, cy + 35, 10, (14, 165, 233))
+    draw.text((cx + 70, cy + 17), txt_com, fill=(255, 255, 255), font=f_com)
 
     return frame
 
@@ -573,7 +571,7 @@ def renderizar_plano_panico_reloj(
 ) -> Image.Image:
     cfg = config or {}
     estilo_fondo = cfg.get("estilo_fondo", "ciudad_cyberpunk")
-    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.35, atenuacion_oscura=0.45)
+    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.85, atenuacion_oscura=0.45)
     badge_txt = cfg.get("badge", "VIERNES • 17:59 HS")
     hora_txt = cfg.get("hora", "17:59")
     sub_reloj = cfg.get("sub_reloj", "TIEMPO LÍMITE: 1 MINUTO PARA EL CIERRE")

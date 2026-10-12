@@ -42,7 +42,7 @@ def renderizar_plano_julius_dashboard(
 ) -> Image.Image:
     cfg = config or {}
     estilo_fondo = cfg.get("estilo_fondo", "ciudad_cyberpunk")
-    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.35, atenuacion_oscura=0.50)
+    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.85, atenuacion_oscura=0.50)
 
     # 1. Aura de datos cyan/azul en el fondo
     cx, cy = ancho // 2, 550
@@ -189,7 +189,7 @@ def renderizar_plano_gamma_slides(
 ) -> Image.Image:
     cfg = config or {}
     estilo_fondo = cfg.get("estilo_fondo", "ciudad_cyberpunk")
-    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.35, atenuacion_oscura=0.50)
+    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.85, atenuacion_oscura=0.50)
 
     # Glow violeta en el fondo
     cx, cy = ancho // 2, 500
@@ -312,7 +312,7 @@ def renderizar_plano_laptop_finde(
 ) -> Image.Image:
     cfg = config or {}
     estilo_fondo = cfg.get("estilo_fondo", "ciudad_cyberpunk")
-    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.35, atenuacion_oscura=0.45)
+    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.85, atenuacion_oscura=0.45)
 
     cx, cy = ancho // 2, 450
     aura = Image.new("RGBA", (ancho, alto), (0, 0, 0, 0))

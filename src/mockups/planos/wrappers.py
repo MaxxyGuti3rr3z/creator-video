@@ -718,10 +718,10 @@ CONFIGS_AGUA_IA = {
         "badge": "EL MITO QUE CORRE EN TODOS LADOS",
         "sprite_byte": DIR_BYTE_TRANSPARENTES / "hook_estresado_transparente.png",
         "elementos": [
-            {"x": 60, "y": 250, "w": 340, "h": 150, "rot": -9, "tit": "Botella por pregunta", "sub": "Titular viral de hoy", "col": (225, 29, 72)},
-            {"x": 660, "y": 240, "w": 340, "h": 150, "rot": 11, "tit": "¿La IA seca ríos?", "sub": "Videos con pánico", "col": (225, 29, 72)},
-            {"x": 50, "y": 1200, "w": 340, "h": 150, "rot": 7, "tit": "700 mil litros", "sub": "Dato sin contexto", "col": (245, 158, 11)},
-            {"x": 670, "y": 1220, "w": 340, "h": 150, "rot": -7, "tit": "¡No preguntes!", "sub": "Comentarios asustados", "col": (225, 29, 72)},
+            {"x": 100, "y": 330, "w": 340, "h": 150, "rot": -9, "tit": "Botella por pregunta", "sub": "Titular viral de hoy", "col": (225, 29, 72)},
+            {"x": 640, "y": 330, "w": 340, "h": 150, "rot": 11, "tit": "¿La IA seca ríos?", "sub": "Videos con pánico", "col": (225, 29, 72)},
+            {"x": 100, "y": 600, "w": 340, "h": 150, "rot": 7, "tit": "700 mil litros", "sub": "Dato sin contexto", "col": (245, 158, 11)},
+            {"x": 640, "y": 600, "w": 340, "h": 150, "rot": -7, "tit": "¡No preguntes!", "sub": "Comentarios asustados", "col": (225, 29, 72)},
         ]
     }),
     "hook": ("PLANO_HERO_CAOS", {
@@ -729,10 +729,10 @@ CONFIGS_AGUA_IA = {
         "badge": "¿UNA BOTELLA DE AGUA POR PREGUNTA?",
         "sprite_byte": DIR_BYTE_TRANSPARENTES / "byte_cortocircuito_transparente.png",
         "elementos": [
-            {"x": 60, "y": 250, "w": 340, "h": 150, "rot": -8, "tit": "¿Es verdad?", "sub": "La pregunta de todos", "col": (245, 158, 11)},
-            {"x": 660, "y": 240, "w": 340, "h": 150, "rot": 10, "tit": "Todos lo comparten", "sub": "Sin mirar la fuente", "col": (225, 29, 72)},
-            {"x": 50, "y": 1200, "w": 340, "h": 150, "rot": 7, "tit": "500 ml", "sub": "Cada 10 respuestas", "col": (225, 29, 72)},
-            {"x": 670, "y": 1220, "w": 340, "h": 150, "rot": -7, "tit": "Vamos a los datos", "sub": "Sin pánico y sin negar", "col": (14, 165, 233)},
+            {"x": 100, "y": 330, "w": 340, "h": 150, "rot": -8, "tit": "¿Es verdad?", "sub": "La pregunta de todos", "col": (245, 158, 11)},
+            {"x": 640, "y": 330, "w": 340, "h": 150, "rot": 10, "tit": "Todos lo comparten", "sub": "Sin mirar la fuente", "col": (225, 29, 72)},
+            {"x": 100, "y": 600, "w": 340, "h": 150, "rot": 7, "tit": "500 ml", "sub": "Cada 10 respuestas", "col": (225, 29, 72)},
+            {"x": 640, "y": 600, "w": 340, "h": 150, "rot": -7, "tit": "Vamos a los datos", "sub": "Sin pánico y sin negar", "col": (14, 165, 233)},
         ]
     }),
     "problema": ("PLANO_HERO_CAOS", {
@@ -740,10 +740,10 @@ CONFIGS_AGUA_IA = {
         "badge": "EL DATO QUE NADIE CONTEXTO",
         "sprite_byte": DIR_BYTE_TRANSPARENTES / "punto_1_guion_13_noticias_ia_realidad_transparente.png",
         "elementos": [
-            {"x": 60, "y": 250, "w": 340, "h": 150, "rot": -9, "tit": "Estudio de 2023", "sub": "Making AI Less Thirsty", "col": (245, 158, 11)},
-            {"x": 660, "y": 240, "w": 340, "h": 150, "rot": 11, "tit": "Modelo GPT-3", "sub": "De 2020, ya superado", "col": (245, 158, 11)},
-            {"x": 50, "y": 1200, "w": 340, "h": 150, "rot": 7, "tit": "700 mil litros", "sub": "Solo del entrenamiento", "col": (225, 29, 72)},
-            {"x": 670, "y": 1220, "w": 340, "h": 150, "rot": -7, "tit": "Centros en EE UU", "sub": "Depende del clima local", "col": (14, 165, 233)},
+            {"x": 100, "y": 330, "w": 340, "h": 150, "rot": -9, "tit": "Estudio de 2023", "sub": "Making AI Less Thirsty", "col": (245, 158, 11)},
+            {"x": 640, "y": 330, "w": 340, "h": 150, "rot": 11, "tit": "Modelo GPT-3", "sub": "De 2020, ya superado", "col": (245, 158, 11)},
+            {"x": 100, "y": 600, "w": 340, "h": 150, "rot": 7, "tit": "700 mil litros", "sub": "Solo del entrenamiento", "col": (225, 29, 72)},
+            {"x": 640, "y": 600, "w": 340, "h": 150, "rot": -7, "tit": "Centros en EE UU", "sub": "Depende del clima local", "col": (14, 165, 233)},
         ]
     }),
     "punto_1": ("PLANO_SPLIT_BEFORE_AFTER", {
@@ -784,9 +784,9 @@ CONFIGS_AGUA_IA = {
         "titulo": "La industria ya responde",
         "subtitulo": "Diseños que ahorran millones de litros por planta",
         "cards": [
-            {"x_off": -180, "y": 380, "tit": "Microsoft", "desc": "Cero agua de enfriamiento", "rot": -7, "col": (37, 99, 235)},
-            {"x_off": 180, "y": 380, "tit": "Circuito cerrado", "desc": "Enfriamiento a nivel de chip", "rot": 7, "col": (124, 58, 237)},
-            {"x_off": 0, "y": 360, "tit": "125 millones", "desc": "de litros ahorrados al año", "rot": 0, "col": (16, 185, 129)}
+            {"x_off": -180, "y": 500, "tit": "Microsoft", "desc": "Cero agua de enfriamiento", "rot": -7, "col": (37, 99, 235)},
+            {"x_off": 180, "y": 500, "tit": "Circuito cerrado", "desc": "Enfriamiento a nivel de chip", "rot": 7, "col": (124, 58, 237)},
+            {"x_off": 0, "y": 480, "tit": "125 millones", "desc": "de litros ahorrados al año", "rot": 0, "col": (16, 185, 129)}
         ],
         "pills": [
             ("Diseño nuevo", (16, 185, 129)),
@@ -795,17 +795,26 @@ CONFIGS_AGUA_IA = {
         ],
         "sprite_byte": DIR_BYTE_TRANSPARENTES / "byte_computadora_feliz_transparente.png",
     }),
-    "cierre": ("PLANO_HOST_COMMUNITY", {
+    "cierre": ("PLANO_BATTLE_VS", {
         "estilo_fondo": "ciudad_cyberpunk",
-        "pregunta_tit": "CTA: COMPARTILO CON EL ASUSTADO",
-        "pregunta_l1": "¿Te sorprendieron los datos",
-        "pregunta_l2": "o ya desconfiabas del viral?",
-        "opciones": [
-            ("A", "Cinco gotas, me voló la cabeza", (16, 185, 129), (236, 253, 245)),
-            ("B", "Yo ya desconfiaba del viral", (37, 99, 235), (239, 246, 255)),
-            ("C", "Se lo mando a mi grupo familiar", (124, 58, 237), (245, 243, 255)),
+        "atenuacion_oscura": 0.45,
+        "header_debate": "DEBATE: EL PÁNICO VS LOS DATOS",
+        "pregunta_debate": "¿Te lo creíste o ya sabías que era mentira?",
+        "titulo_izq": "EL PÁNICO VIRAL",
+        "items_izq": [
+            "• 500 ml cada 10 preguntas",
+            "• Dato de 2023 sin contexto",
+            "• Se comparte sin mirar",
+            "• Música de miedo incluida",
         ],
-        "callout": "Mandá este video a tu amigo asustado",
+        "titulo_der": "LOS DATOS REALES",
+        "items_der": [
+            "• 0,26 mL = 5 gotas",
+            "• 0,24 Wh por consulta",
+            "• Medido en 2025",
+            "• Google y Microsoft lo publican",
+        ],
+        "callout": "Contame: ¿te lo creíste?",
         "sprite_byte": DIR_BYTE_TRANSPARENTES / "cierre_guion_13_noticias_ia_realidad_transparente.png",
     }),
 }

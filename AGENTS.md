@@ -1,5 +1,8 @@
 # Normas del Proyecto - Byte el Zorrito
 
+> ⚠️ **REGLAS TÉCNICAS COMPLETAS DE PRODUCCIÓN**: Ver `.agents/rules/reglas_produccion_video.md`
+> Este archivo contiene TODAS las mejoras acumuladas (videos 7-13): safe zones exactas, ASS subtítulos, anti-template, emojis PIL, fondos dinámicos, estructura de escenas, validación de guión y protocolo de kickoff. Cualquier IA que genere videos DEBE leerlo antes de producir.
+
 Consulte las reglas específicas en `.agents/rules/`:
   - **No usar puntos (`.`) en los guiones**: Para evitar pausas/silencios largos de 1 a 2 segundos en ElevenLabs. Emplear comas o redacción continua.
   - **Subtítulos (Safe Zone Móvil y Lectura Ágil)**: Amarillo puro `#FFF500` con borde negro (tamaño 46px, `MarginL/R: 80px`). En el inicio (cold open, hook, problema) y preguntas de cierre, mantener chunks de 4 a 6 palabras partiendo en 2 líneas cortas con `\N` a partir de 3 palabras. Máximo 2 a 3 palabras por sublínea para que el texto jamás roce los laterales ni sea tapado por la interfaz de TikTok o Instagram Reels.
@@ -32,3 +35,7 @@ Consulte las reglas específicas en `.agents/rules/`:
     - Queda terminantemente prohibido colocar banners o píldoras flotantes en la mitad inferior de la pantalla (`y: 1200..1850`) tapando el cuerpo, cara o laptop de Byte.
   - **Sin métricas inventadas ni promesas imposibles**: Prohibido inventar cifras de tiempo ahorrado, porcentajes ficticios o dinero en mockups. Prohibido afirmar "cero alucinaciones" (usar conceptos rigurosos: "Menos alucinaciones", "Fuentes verificadas", "Respuestas ancladas a tus notas").
   - **Estilo de ventana**: 3 puntos simples en gris neutro, sin colores tipo semáforo de macOS.
+  - **CRÍTICO — Emojis en PIL/Pillow**: Terminantemente PROHIBIDO insertar emojis Unicode en textos renderizados con PIL. PIL no soporta el plano suplementario Unicode y genera crashes silenciosos. Usar tags ASCII: `[OK]`, `[!]`, `[X]`, `[>>]`. Los emojis solo van en los guiones JSON y copies de redes sociales, NUNCA en código de renderizado Python.
+  - **CRÍTICO — Detección de fondos dinámicos**: El ID `viaje_espacial` NO contiene la cadena "espacio" — verificar siempre usando `"espac" in estilo or "viaje" in estilo` para no caer en el fallback de fondo plano sin animación.
+  - **Biblioteca de sprites de Byte**: `Imagen_byte_frente`, `byte_sentado_frente_feliz`, `byte_perfil`, `byte_ojos_estrella`, `byte_señalando_serio`, `byte_saltando_feliz`, `cierre_transparente`, `byte_agotado`. Nunca el mismo sprite en dos escenas consecutivas del mismo video.
+  - **Rotación de formato de cierre**: Prohibido repetir el mismo formato de encuesta de cierre en videos consecutivos. Rotar entre: encuesta A/B/C, Battle Card VS, pregunta de debate directo, medidor de dolor.

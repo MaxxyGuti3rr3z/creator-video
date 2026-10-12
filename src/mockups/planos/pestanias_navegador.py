@@ -237,25 +237,25 @@ def renderizar_plano_battle_vs(
 ) -> Image.Image:
     cfg = config or {}
     estilo_fondo = cfg.get("estilo_fondo", "viaje_espacial")
-    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.85, atenuacion_oscura=0.25)
+    atenuacion = cfg.get("atenuacion_oscura", 0.25)
+    frame = obtener_lienzo_dinamico_fondo(estilo=estilo_fondo, ancho=ancho, alto=alto, t_sec=t_sec, velocidad_lenta=0.85, atenuacion_oscura=atenuacion)
     draw = ImageDraw.Draw(frame)
 
-    # 1. Título Superior Estilo Debate
-    # 1. Título Superior Estilo Debate
-    draw.rounded_rectangle([40, 70, ancho - 40, 190], radius=20, fill=(15, 23, 42, 240), outline=(56, 189, 248), width=2)
-    dibujar_chispa_ia(draw, 75, 115, 12, (56, 189, 248))
+    # 1. Título Superior Estilo Debate (inicia en y=250, zona muerta 0..240 vacía)
+    draw.rounded_rectangle([100, 250, ancho - 100, 360], radius=20, fill=(15, 23, 42, 240), outline=(56, 189, 248), width=2)
+    dibujar_chispa_ia(draw, 135, 290, 12, (56, 189, 248))
     tit_debate = cfg.get("header_debate", "DEBATE A LA COMUNIDAD:")
-    draw.text((105, 95), tit_debate, fill=(56, 189, 248), font=obtener_fuente(22, bold=True))
+    draw.text((165, 275), tit_debate, fill=(56, 189, 248), font=obtener_fuente(22, bold=True))
     preg_debate = cfg.get("pregunta_debate", "¿Sos Team 50 pestañas o Team 1 clic?")
-    draw.text((60, 135), preg_debate, fill=(255, 255, 255), font=obtener_fuente(28, bold=True))
+    draw.text((130, 315), preg_debate, fill=(255, 255, 255), font=obtener_fuente(28, bold=True))
 
-    # 2. Las Dos Tarjetas de Batalla Lado a Lado (Card VS)
-    y_card = 220
-    h_card = 460
-    w_card = (ancho - 100) // 2
+    # 2. Las Dos Tarjetas de Batalla Lado a Lado (Card VS) — franja y=380..780, x=100..980
+    y_card = 380
+    h_card = 400
+    w_card = (880 - 20) // 2
 
     # Lado Izquierdo: Rojo
-    x_izq = 40
+    x_izq = 100
     tit_izq = cfg.get("titulo_izq", "TEAM 50 PESTAÑAS")
     draw.rounded_rectangle([x_izq, y_card, x_izq + w_card, y_card + h_card], radius=22, fill=(15, 23, 42, 245), outline=(225, 29, 72), width=2)
     draw.rounded_rectangle([x_izq + 15, y_card + 15, x_izq + w_card - 15, y_card + 75], radius=12, fill=(225, 29, 72))
@@ -292,22 +292,27 @@ def renderizar_plano_battle_vs(
     draw.ellipse([cx_vs - r_vs, cy_vs - r_vs, cx_vs + r_vs, cy_vs + r_vs], fill=(15, 23, 42), outline=(234, 179, 8), width=3)
     draw.text((cx_vs - 24, cy_vs - 20), "VS", fill=(234, 179, 8), font=obtener_fuente(34, bold=True))
 
-    # 3. Floating Callout (Ubicado en y=710..785, debajo de las cards y encima de los subtítulos)
-    draw.rounded_rectangle([ancho // 2 - 280, 710, ancho // 2 + 280, 785], radius=24, fill=(15, 23, 42, 245), outline=(234, 179, 8), width=2)
-    dibujar_chispa_ia(draw, ancho // 2 - 250, 747, 10, (234, 179, 8))
-    draw.text((ancho // 2 - 225, 732), "¿De qué lado estás? Votá en comentarios", fill=(255, 255, 255), font=obtener_fuente(24, bold=True))
+    # 3. Floating Callout (única píldora flotante en y=790..860, franja permitida)
+    txt_callout = cfg.get("callout", "¿De qué lado estás? Votá en comentarios")
+    f_com = obtener_fuente(28, bold=True)
+    bbox_com = draw.textbbox((0, 0), txt_callout, font=f_com)
+    cw = min(bbox_com[2] - bbox_com[0] + 130, 860)
+    cx_com = (ancho - cw) // 2
+    draw.rounded_rectangle([cx_com, 790, cx_com + cw, 860], radius=35, fill=(15, 23, 42, 245), outline=(234, 179, 8), width=2)
+    dibujar_chispa_ia(draw, cx_com + 34, 825, 10, (234, 179, 8))
+    draw.text((cx_com + 72, 806), txt_callout, fill=(255, 255, 255), font=f_com)
 
-    # 4. Byte Host en el Centro Señalando (100% visible, sin banners encima)
+    # 4. Byte Host en el Centro Señalando (base en y=1650, zona sagrada)
     p_byte = cfg.get("sprite_byte")
     if p_byte and Path(p_byte).exists():
         with Image.open(p_byte) as img_b:
             b_cropped = img_b.crop(img_b.convert("RGBA").getbbox())
             aspect = b_cropped.width / max(1, b_cropped.height)
-            bh = 620
+            bh = 510
             bw = int(bh * aspect)
             b_resized = b_cropped.resize((bw, bh), Image.Resampling.LANCZOS)
             bx = (ancho - bw) // 2
-            by = 1180 + int(6 * math.sin(t_sec * 3.0))
+            by = 1134 + int(6 * math.sin(t_sec * 3.0))
             frame.paste(b_resized, (bx, by), b_resized)
 
     return frame
