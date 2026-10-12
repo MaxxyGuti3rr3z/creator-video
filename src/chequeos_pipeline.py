@@ -10,13 +10,17 @@ pre_vuelo (ANTES de gastar créditos ElevenLabs):
      caché vencida bloquea para no renderizar con artefactos viejos
      (el bug que hizo salir el video 14 con el layout anterior).
 
+PASO 5 (DESPUÉS de generar_ass, ANTES de ensamblar_video):
+  3. lint_subtitulos sobre el .ass: estilo 46px / color amarillo / chunks
+     y \N correctos (bloquea el render si el subtítulo está mal).
+
 post_vuelo (DESPUÉS del render, antes de publicar):
-  3. lint_zonas_seguras sobre el MP4 final: contenido en zonas prohibidas
+  4. lint_zonas_seguras sobre el MP4 final: contenido en zonas prohibidas
      de TikTok/Reels marca "no publicar" (exit code != 0).
 
-Ambas funciones devuelven 0 (continuar) o 1 (bloquear) y son de solo
-lectura. Escape: --saltar-validacion (pre) y --sin-chequeo-final (post)
-en pruebas/prueba_end_to_end.py.
+Todas las funciones devuelven 0 (continuar) o 1 (bloquear) y son de solo
+lectura. Escape: --saltar-validacion (pre y ASS) y --sin-chequeo-final
+(post) en pruebas/prueba_end_to_end.py.
 """
 
 from __future__ import annotations
@@ -32,6 +36,7 @@ if str(DIR_RAIZ) not in sys.path:
 from src.validar_guion import validar_guion  # noqa: E402
 from pruebas.lint_obsoleto import main as _lint_obsoleto_main  # noqa: E402
 from pruebas.lint_zonas_seguras import main as _lint_zonas_main  # noqa: E402
+from pruebas.lint_subtitulos import main as _lint_subtitulos_main  # noqa: E402
 
 _SEPARADOR = "=" * 65
 
@@ -116,4 +121,29 @@ def post_vuelo(ruta_mp4: Optional[Path], guardar_evidencia: bool = True) -> int:
         return 1
 
     print("\n[POST-VUELO] OK — zonas seguras, el video es publicable.")
+    return 0
+
+
+def chequear_ass(ruta_ass: Path) -> int:
+    r"""
+    Valida el .ass recién generado contra la especificación (estilo 46px,
+    color amarillo, chunks y \N). Devuelve 0 (continuar a ensamblar) o 1
+    (bloquear: el estilo o los chunks no son correctos).
+    """
+    print(f"\n{_SEPARADOR}")
+    print(" [CHEQUEO ASS] Subtítulos conformes a especificación")
+    print(_SEPARADOR)
+
+    if ruta_ass is None or not Path(ruta_ass).exists():
+        print("  [ -- ]  sin .ass para verificar (se omite)")
+        return 0
+
+    rc = _ejecutar(_lint_subtitulos_main, [str(ruta_ass)])
+
+    if rc:
+        print("\n[CHEQUEO ASS] BLOQUEADO — subtítulos fuera de especificación.")
+        print("  Corrige generar_ass / chunks (ver detalle arriba) y reintentá.")
+        return 1
+
+    print("\n[CHEQUEO ASS] OK — subtítulos conformes, se puede ensamblar.")
     return 0

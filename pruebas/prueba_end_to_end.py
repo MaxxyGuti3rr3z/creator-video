@@ -105,7 +105,7 @@ from src.registro_videos import (
     generar_fondos_del_video,
 )
 
-from src.chequeos_pipeline import pre_vuelo, post_vuelo
+from src.chequeos_pipeline import pre_vuelo, post_vuelo, chequear_ass
 
 # Cargar explícitamente variables de entorno desde el .env del proyecto
 from dotenv import load_dotenv
@@ -921,6 +921,11 @@ def main() -> int:
         ruta_salida=ruta_ass,
         max_words_per_chunk=3
     )
+
+    if not saltar_validacion:
+        if chequear_ass(ruta_ass) != 0:
+            print("\n[PIPELINE] Abortado por el CHEQUEO ASS (subtítulos fuera de especificación).")
+            return 1
 
     ruta_mp4_base = dir_intermedios / f"video_{nombre_base}_base.mp4"
     ensamblar_video(

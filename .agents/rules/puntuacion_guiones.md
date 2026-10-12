@@ -8,7 +8,7 @@
   - Eliminar puntos finales de las oraciones en los campos `hook`, `explicacion`, `opinion_byte` y `cierre`.
 
 ## 2. Estilo y Estructura de Subtítulos
-- Mantener siempre texto amarillo puro (`PrimaryColour=&H0000F5FF&` en BGR ASS) con borde negro sólido y tamaño calibrado en **58px** (evitar tamaños gigantes >70px que empequeñecen a Byte).
+- Mantener siempre texto amarillo puro (`PrimaryColour=&H0000F5FF&` en BGR ASS) con borde negro sólido y tamaño calibrado en **46px** (evitar tamaños gigantes >70px que empequeñecen a Byte; el valor canónico del generador es 46, validado por `pruebas/lint_subtitulos.py`).
 - **Premisa, Problema y Preguntas Completas al Inicio**:
   - En los segmentos iniciales de impacto (`cold_open`, `hook`, `problema`) y en preguntas clave de cierre (`cierre`), la frase debe presentarse como un **bloque de sentido completo** (hasta 10-12 palabras) para eliminar la fricción cognitiva en los primeros 3 segundos.
   - Si el bloque supera las 4 palabras, debe dividirse armónicamente en 2 líneas usando el salto de línea `\N` respetando límites gramaticales (comas o dos puntos). Todas las palabras permanecen visibles en pantalla y se iluminan dinámicamente con animación pop-in en sincronía con la locución.
