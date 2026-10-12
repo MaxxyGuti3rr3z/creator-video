@@ -77,7 +77,7 @@ proyecto/
 │  ├─ test_lint_*.py, test_chequeos_pipeline.py   # Suites de los linters (99 tests)
 │  ├─ test_pipeline_modulos.py           # Módulos extraídos del monolito (19 tests)
 │  ├─ test_runner_previews.py, test_ci_local.py  # Tests de los runners (20 tests)
-│  └─ archivo_pruebas/                  # Tests unitarios del ensamblador (3 tests)
+│  └─ archivo_pruebas/                  # Tests unitarios del ensamblador (8 tests)
 ├─ cache/                               # Caché de audio determinista de ElevenLabs
 │  └─ cache_audio/                      # *.mp3, *_alignment.json, cache_audio_index.json
 ```
@@ -195,11 +195,11 @@ python pruebas/test_runner_previews.py
 # CI local: registro, parseo y CLI (12 tests, no corre las suites)
 python pruebas/test_ci_local.py
 
-# Ensamble de video (3 tests; ~1 min, genera artefactos)
+# Ensamble de video (8 tests; ~1 min, genera artefactos)
 python pruebas/archivo_pruebas/test_shorts_assembler.py
 ```
 
-**Total: 147 tests en 10 suites**, todos en verde. Además, `python pruebas/test_smoke_planos.py`
+**Total: 152 tests en 10 suites**, todos en verde. Además, `python pruebas/test_smoke_planos.py`
 es un smoke test visual que renderiza los 49 planos y un clip cinematográfico (RC=0 = OK).
 
 El mismo `ci_local.py` corre **en la nube**: GitHub Actions lo ejecuta en cada push/PR a `main`
@@ -222,8 +222,10 @@ Renderiza PNG de diagnóstico en `videos/video_XX/intermedios/previews_director/
 ## 📈 Estado del Proyecto
 
 - **14 videos** producidos (catálogo de 13 guiones maestros, `guiones/guion_02..14`).
-- **147 tests** automatizados en 10 suites (+ 1 smoke test visual), todos en verde.
+- **152 tests** automatizados en 10 suites (+ 1 smoke test visual), todos en verde.
 - **5 linters** de calidad cableados al pipeline; validación previa sin gastar créditos.
+- **Edición automática**: transiciones xfade rotativas anti-template (8 tipos con pin
+  narrativo por tipo de escena) + grado cinematográfico (vignette, contraste, grano fino).
 - **CI doble**: local (`python pruebas/ci_local.py` + hook pre-push opcional) y en la nube
   (GitHub Actions en cada push/PR a `main`).
 - **10 / 10** — sin pendientes abiertos.

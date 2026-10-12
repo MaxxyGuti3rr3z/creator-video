@@ -22,7 +22,10 @@ from shorts_assembler import (
     ensamblar_video,
     validar_output,
     _agrupar_caracteres_en_palabras,
-    _dividir_en_chunks
+    _dividir_en_chunks,
+    TRANSICIONES_XFADE,
+    transicion_para_escena,
+    _semilla_transiciones,
 )
 
 
@@ -199,6 +202,38 @@ class TestShortsAssembler(unittest.TestCase):
         # Tarea 3: Validar video
         valido = validar_output(ruta_mp4, duracion_esperada=self.duracion_total, tolerancia=0.1)
         self.assertTrue(valido)
+
+
+class TestTransicionesRotativas(unittest.TestCase):
+    def test_catalogo_sin_repeticion_al_envolver(self):
+        n = len(TRANSICIONES_XFADE)
+        self.assertGreaterEqual(n, 4)
+        for idx, nombre in enumerate(TRANSICIONES_XFADE):
+            self.assertNotEqual(nombre, TRANSICIONES_XFADE[(idx + 1) % n])
+
+    def test_rotacion_determinista_y_variada(self):
+        seq = [transicion_para_escena(i, "", 7) for i in range(12)]
+        self.assertEqual(seq, [transicion_para_escena(i, "", 7) for i in range(12)])
+        self.assertGreaterEqual(len(set(seq)), 4)
+        for a, b in zip(seq, seq[1:]):
+            self.assertNotEqual(a, b)
+
+    def test_pin_narrativo_por_tipo(self):
+        self.assertEqual(transicion_para_escena(3, "problema", 0), "fadeblack")
+        self.assertEqual(transicion_para_escena(3, "escena_problema", 0), "fadeblack")
+        self.assertEqual(transicion_para_escena(3, "panico", 0), "fadeblack")
+        self.assertEqual(transicion_para_escena(3, "resultado", 0), "fadewhite")
+
+    def test_anti_repeticion_con_pin_narrativo(self):
+        t1 = transicion_para_escena(1, "resultado", 0)
+        t2 = transicion_para_escena(2, "resultado", 0, anterior=t1)
+        self.assertNotEqual(t1, t2)
+        self.assertIn(t2, TRANSICIONES_XFADE)
+
+    def test_semilla_determinista_por_ruta(self):
+        self.assertEqual(_semilla_transiciones("video_12_ciberseguridad.mp4"), 12)
+        self.assertEqual(_semilla_transiciones("video_14_agua_ia.mp4"), 14)
+        self.assertEqual(_semilla_transiciones("short_test.mp4"), 0)
 
 
 if __name__ == "__main__":

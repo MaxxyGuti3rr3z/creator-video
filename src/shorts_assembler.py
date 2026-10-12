@@ -767,6 +767,60 @@ def generar_fondo_texturado(
     return str(ruta_salida)
 
 
+# ---------------------------------------------------------------------------
+# Transiciones xfade (rotación anti-template por video)
+# ---------------------------------------------------------------------------
+
+# Catálogo curado para vertical 9:16; la rotación arranca sembrada por el
+# número del video para que cada uno tenga su propia secuencia reproducible.
+TRANSICIONES_XFADE: Tuple[str, ...] = (
+    "fade", "slideleft", "smoothup", "circleopen",
+    "wipeleft", "fadeblack", "slidedown", "fadewhite",
+)
+
+# Ajuste narrativo: la escena que llega pinnea la transición para que la
+# edición acompañe la historia (valores siempre dentro del catálogo).
+TRANSICIONES_POR_TIPO: Dict[str, str] = {
+    "problema": "fadeblack",
+    "escena_problema": "fadeblack",
+    "panico": "fadeblack",
+    "resultado": "fadewhite",
+}
+
+# Grado cinematográfico sutil (vigilar brillo en zonas con lint_zonas_seguras)
+GRADO_VIGNETTE: str = "PI/6"                     # viñeta suave en los bordes
+GRADO_EQ: str = "contrast=1.06:saturation=1.10"  # contraste y color leves
+GRADO_NOISE: str = "alls=4:allf=t"               # grano fino temporal
+
+
+def _semilla_transiciones(ruta_salida: Union[str, Path]) -> int:
+    """Semilla determinista por video a partir de los dígitos de ruta_salida."""
+    m = re.search(r"(\d+)", Path(ruta_salida).stem)
+    return int(m.group(1)) if m else 0
+
+
+def transicion_para_escena(
+    i: int,
+    tipo_escena: Optional[str],
+    semilla: int,
+    anterior: Optional[str] = None,
+) -> str:
+    """Elige la transición xfade del corte que llega a la escena i.
+
+    Rotación sembrada por video + pin narrativo por tipo de escena +
+    guardia anti-repetición (nunca dos cortes seguidos iguales).
+    """
+    elegida: Optional[str] = None
+    if tipo_escena:
+        elegida = TRANSICIONES_POR_TIPO.get(str(tipo_escena).lower())
+    if elegida is None:
+        elegida = TRANSICIONES_XFADE[(semilla + i) % len(TRANSICIONES_XFADE)]
+    if anterior is not None and elegida == anterior:
+        idx = TRANSICIONES_XFADE.index(elegida)
+        elegida = TRANSICIONES_XFADE[(idx + 1) % len(TRANSICIONES_XFADE)]
+    return elegida
+
+
 def ensamblar_video(
     imagenes: Union[List[Union[str, Path]], Dict[str, Union[str, Path]]],
     audio: Union[str, Path],
@@ -781,8 +835,8 @@ def ensamblar_video(
     Ensambla el video vertical 9:16 (1080x1920) a 30fps con composición en DOS CAPAS:
     1. Capa de Fondo: Con textura sutil (degradado, blobs suaves cyan/coral y circuito Byte) y PANEO real alternado por escena.
     2. Capa de Byte: Imagen transparente centrada con respiración senoidal (escala oscilando entre 0.96 y 1.04).
-    3. Superposición con overlay y transiciones crossfade entre escenas compuestas.
-    4. Burn-in de subtítulos ASS karaoke y mezcla de audio AAC.
+    3. Superposición con overlay y transiciones xfade rotativas (anti-template) entre escenas.
+    4. Grado cinematográfico (vignette + eq + grano), burn-in de subtítulos ASS karaoke y mezcla de audio AAC.
     """
     audio_path = Path(audio).resolve()
     ass_path = Path(archivo_ass).resolve()
@@ -995,23 +1049,37 @@ def ensamblar_video(
         filter_chains.append(chain_comp)
 
     # Transiciones xfade sucesivas entre las escenas compuestas comp_i
+    # (rotación anti-template sembrada por video + pin narrativo por tipo)
     if num_clips == 1:
         last_v = "[comp0]"
     else:
+        semilla = _semilla_transiciones(ruta_salida)
+        trans_anterior: Optional[str] = None
         prev_node = "[comp0]"
         for i in range(1, num_clips):
             next_node = f"[comp{i}]"
             out_node = f"[xf{i-1}]" if i < num_clips - 1 else "[vjoined]"
             offset = offsets[i - 1]
+            tipo = str(segmentos[i].get("tipo", "")).lower() if i < len(segmentos) else ""
+            trans = transicion_para_escena(i, tipo, semilla, trans_anterior)
             filter_chains.append(
-                f"{prev_node}{next_node}xfade=transition=fade:duration={fade_duration:.3f}:offset={offset:.3f}{out_node}"
+                f"{prev_node}{next_node}xfade=transition={trans}:duration={fade_duration:.3f}:offset={offset:.3f}{out_node}"
             )
+            trans_anterior = trans
             prev_node = out_node
         last_v = "[vjoined]"
 
-    # Quemado de subtítulos ASS
+    # Grado cinematográfico sutil (vignette + contraste/saturación + grano fino)
+    # y quemado de subtítulos ENCIMA: los subs conservan su amarillo #FFF500
+    # crudo. Ajuste fino en las constantes GRADO_* (verificar con lint_zonas_seguras).
     escaped_ass = _escape_ass_path(ass_path)
-    filter_chains.append(f"{last_v}ass=filename='{escaped_ass}'[vout]")
+    filter_chains.append(
+        f"{last_v}format=yuv420p,"
+        f"vignette=angle={GRADO_VIGNETTE},"
+        f"eq={GRADO_EQ},"
+        f"noise={GRADO_NOISE},"
+        f"ass=filename='{escaped_ass}'[vout]"
+    )
 
     full_filter = ";\n".join(filter_chains)
 

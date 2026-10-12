@@ -1,6 +1,6 @@
 # CI en la nube — pipeline "Byte el Zorrito" (repo creator-video).
 # Ejecuta exactamente el mismo comando que el CI local:
-#   python pruebas/ci_local.py   -> 10 suites / 147 tests
+#   python pruebas/ci_local.py   -> 10 suites / 152 tests
 # Requiere ffmpeg (apt) y requirements.txt (pillow, rembg, onnxruntime...).
 name: CI
 
