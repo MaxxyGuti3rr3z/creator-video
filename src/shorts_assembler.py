@@ -773,9 +773,14 @@ def generar_fondo_texturado(
 
 # Catálogo curado para vertical 9:16; la rotación arranca sembrada por el
 # número del video para que cada uno tenga su propia secuencia reproducible.
+# SOLO tipos de revelado/mezcla (blend o wipe): cada píxel de salida toma el
+# valor de A o B en su misma posición, así ningún contenido puede salirse de
+# las safe zones laterales. Prohibidos los de traducción (slideleft/smoothup/
+# slidedown): desplazan los mockups fuera de x>=90/x<=990 durante el corte y
+# lint_zonas_seguras los detecta como violación (evidencia video_13 frame_0028).
 TRANSICIONES_XFADE: Tuple[str, ...] = (
-    "fade", "slideleft", "smoothup", "circleopen",
-    "wipeleft", "fadeblack", "slidedown", "fadewhite",
+    "fade", "wiperight", "circleclose", "circleopen",
+    "wipeleft", "fadeblack", "wipedown", "fadewhite",
 )
 
 # Ajuste narrativo: la escena que llega pinnea la transición para que la
