@@ -36,6 +36,7 @@ NO cubre (limitaciones documentadas):
 Uso:
     python pruebas/lint_obsoleto.py [carpeta_video ...] [--solo fondos|sprites|final]
 
+  - --solo es repetible (--solo fondos --solo sprites ejecuta solo esos).
   - Sin argumentos: todas las carpetas de videos/.
   - Acepta rutas ("videos/video_14_agua_ia") o nombres ("video_14_agua_ia").
   - Exit 1 si hay algún FAIL; 0 en caso contrario. Solo lectura.
@@ -441,8 +442,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         help="carpetas de video (ruta o nombre); default: todas las de videos/",
     )
     parser.add_argument(
-        "--solo", choices=CHEQUES, default=None,
-        help="ejecutar un solo tipo de cheque",
+        "--solo", action="append", choices=CHEQUES, default=None,
+        help="ejecutar solo ese cheque (repetible: --solo fondos --solo sprites)",
     )
     parser.add_argument(
         "--dir-guiones", type=Path, default=DIR_GUIONES,
@@ -455,7 +456,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         print("No hay carpetas de video que analizar.")
         return 0
 
-    activos = (args.solo,) if args.solo else CHEQUES
+    activos = tuple(dict.fromkeys(args.solo)) if args.solo else CHEQUES
     mapa = mapa_de_guiones(args.dir_guiones)
 
     print(f"[ARTEFACTOS OBSOLETOS] carpetas={len(carpetas)} cheques={','.join(activos)}\n")
@@ -472,10 +473,11 @@ def main(argv: Optional[List[str]] = None) -> int:
             etiqueta += " [sin guion asociado; sprites/final n/a]"
         print(f"{etiqueta}:")
 
-        resultados = hallazgos_de_video(
-            carpeta, nombre_base, mockup, ruta_guion, solo=args.solo
-        )
-        for cheque, hallazgo in zip(activos, resultados):
+        for cheque in activos:
+            resultados = hallazgos_de_video(
+                carpeta, nombre_base, mockup, ruta_guion, solo=cheque
+            )
+            hallazgo = resultados[0] if resultados else None
             if hallazgo is None:
                 print(f"  [ -- ] {cheque:<7} n/a")
                 continue

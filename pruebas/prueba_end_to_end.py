@@ -5,12 +5,22 @@ Pipeline de prueba de extremo a extremo con el guion real de "Bandeja de entrada
 
 Uso:
     python pruebas/prueba_end_to_end.py [ruta_guion.json] [--forzar-fondos]
+        [--saltar-validacion] [--sin-chequeo-final]
 
     --forzar-fondos   Regenera los MP4 de intermedios/fondos/ aunque existan.
                       Obligatorio tras editar arquetipos/configs de planos:
                       si no, el pipeline reusa la caché de fondos y el video
                       final queda con el aspecto ANTERIOR a los cambios
                       (el audio SÍ usa su propia caché y no gasta créditos).
+
+    --saltar-validacion   Salta el PRE-VUELO (validar_guion + lint_obsoleto de
+                      fondos/sprites de la carpeta destino). Sin este flag, el
+                      pipeline ABORTA antes de gastar créditos si el guion tiene
+                      errores o la carpeta tiene caché vencida.
+
+    --sin-chequeo-final   Salta el POST-VUELO (lint_zonas_seguras sobre el MP4
+                      final). Sin este flag, el pipeline termina con exit 1 si el
+                      video tiene contenido en zonas prohibidas (no publicar).
 
 1. Guion real estructurado.
 2. Audio y alignment (ElevenLabs with timestamps o generador de alta fidelidad).
@@ -94,6 +104,8 @@ from src.registro_videos import (
     overlay_vacio,
     generar_fondos_del_video,
 )
+
+from src.chequeos_pipeline import pre_vuelo, post_vuelo
 
 # Cargar explícitamente variables de entorno desde el .env del proyecto
 from dotenv import load_dotenv
@@ -694,10 +706,12 @@ def extraer_frames_preview(
     return rutas
 
 
-def cargar_guion(ruta_arg: Optional[Union[str, Path]] = None) -> Tuple[Dict[str, Any], Dict[str, Path], str]:
+def cargar_guion(ruta_arg: Optional[Union[str, Path]] = None) -> Tuple[Dict[str, Any], Dict[str, Path], str, Optional[Path]]:
     """
     Carga el guión JSON y determina la estructura de carpetas (entrada, intermedios, final).
     Soporta rutas relativas/absolutas o autodetecta en guiones/ y videos/.
+    Devuelve (guion, v_paths, nombre_base, ruta_guion_archivo); la ruta es
+    None en el fallback de prueba_real (no hay archivo que validar).
     """
     import sys
     if ruta_arg is None:
@@ -724,16 +738,16 @@ def cargar_guion(ruta_arg: Optional[Union[str, Path]] = None) -> Tuple[Dict[str,
         nombre_base, carpeta_video = resolver_carpeta(stem)
         v_paths = ruta_video(carpeta_video)
 
-        return guion, v_paths, nombre_base
+        return guion, v_paths, nombre_base, p
 
     v_paths = ruta_video("video_01_bandeja_correo")
-    return GUION_REAL, v_paths, "prueba_real"
+    return GUION_REAL, v_paths, "prueba_real", None
 
 
 # ===========================================================================
 # EJECUCIÓN PRINCIPAL MULTI-GUIÓN
 # ===========================================================================
-def main():
+def main() -> int:
     logger.info("=================================================================")
     logger.info("EJECUTANDO PIPELINE MULTI-GUIÓN (AISLADO POR PROYECTO)")
     logger.info("=================================================================")
@@ -741,7 +755,7 @@ def main():
     api_key = os.environ.get("ELEVENLABS_API_KEY")
     voice_id = os.environ.get("ELEVENLABS_VOICE_ID", "nPczCjzI2devNBz1zQrb")
 
-    guion, v_paths, nombre_base = cargar_guion()
+    guion, v_paths, nombre_base, ruta_guion_archivo = cargar_guion()
     dir_proyecto = v_paths["base"]
     dir_entrada = v_paths["entrada"]
     dir_intermedios = v_paths["intermedios"]
@@ -750,6 +764,9 @@ def main():
     # Flags CLI: --forzar-fondos regenera los MP4 de fondo aunque existan en caché
     # (necesario tras editar planos/configs; el audio sigue usando su caché normal)
     forzar_fondos = "--forzar-fondos" in sys.argv
+    # Escape de las validaciones automáticas (pre-vuelo/post-vuelo)
+    saltar_validacion = "--saltar-validacion" in sys.argv
+    sin_chequeo_final = "--sin-chequeo-final" in sys.argv
 
     mockup_sugerido = guion.get("mockup_sugerido", "bandeja_correo")
 
@@ -760,6 +777,11 @@ def main():
     print(f"  • Intermedios:      {dir_intermedios.resolve()}")
     print(f"  • Video de salida:  {dir_final / f'video_{nombre_base}.mp4'}")
     print(f"  • Fondos:           {'FORZADOS (--forzar-fondos)' if forzar_fondos else 'caché si existen'}\n")
+
+    if not saltar_validacion:
+        if pre_vuelo(ruta_guion_archivo, dir_proyecto) != 0:
+            print("\n[PIPELINE] Abortado por el PRE-VUELO (sin créditos gastados).")
+            return 1
 
     bloques = construir_bloques_narrativos(guion)
     texto_completo = concatenar_texto_completo(bloques)
@@ -963,6 +985,11 @@ def main():
         print(f"      - {f.name} ({f.resolve()})")
     print("=" * 65)
 
+    codigo_final = 0
+    if not sin_chequeo_final:
+        codigo_final = post_vuelo(ruta_mp4)
+    return codigo_final
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
