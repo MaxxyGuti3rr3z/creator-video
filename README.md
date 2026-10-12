@@ -59,11 +59,9 @@ proyecto/
 ├─ pruebas/                             # Entorno de tests, demos y capturas de staging
 │  ├─ prueba_end_to_end.py              # Orquestador del pipeline completo
 │  ├─ demo_ejecucion.py                 # Demostración sintética autónoma
-│  ├─ archivo_pruebas/                  # Tests unitarios
-│  └─ test_shortwave_frames/            # Frames de prueba de interfaz
+│  └─ archivo_pruebas/                  # Tests unitarios
 ├─ cache/                               # Caché de audio determinista de ElevenLabs
 │  └─ cache_audio/                      # *.mp3, *_alignment.json, cache_audio_index.json
-└─ _archivo/                            # Cuarentena: duplicados, huérfanos y temporales históricos
 ```
 
 ---

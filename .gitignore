@@ -8,7 +8,6 @@ __pycache__/
 # Caché y espacios de trabajo de videos (regenerables)
 cache/
 videos/
-_archivo/
 assets_animaciones_byte/
 test_artifacts/
 pruebas/demo_assets/

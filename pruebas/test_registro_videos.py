@@ -40,7 +40,12 @@ def _set(base, *pares):
 # ---------------------------------------------------------------------------
 
 def _vieja_carpeta(stem: str):
-    if "03" in stem or "tareas" in stem:
+    # 12/13 pasaron del fallback video_<stem> a carpeta canónica explícita
+    if "13" in stem or "noticias" in stem:
+        return stem, "video_13_noticias_ia_realidad"
+    elif "12" in stem or "ciberseguridad" in stem or "google_ads" in stem:
+        return stem, "video_12_ciberseguridad_google_ads"
+    elif "03" in stem or "tareas" in stem:
         return "guion_03", "video_03_tareas"
     elif "02" in stem or "reuniones" in stem:
         return "guion_02", "video_02_reuniones"
@@ -315,8 +320,8 @@ class TestEquivalenciaRegistro(unittest.TestCase):
             "guion_09_diseno_flyers": "video_09_diseno_flyers",
             "guion_10_cotizacion_automatica": "video_10_cotizacion_automatica",
             "guion_11_cincuenta_archivos": "video_11_cincuenta_archivos",
-            "guion_12_ciberseguridad_google_ads": "video_guion_12_ciberseguridad_google_ads",
-            "guion_13_noticias_ia_realidad": "video_guion_13_noticias_ia_realidad",
+            "guion_12_ciberseguridad_google_ads": "video_12_ciberseguridad_google_ads",
+            "guion_13_noticias_ia_realidad": "video_13_noticias_ia_realidad",
         }
         for p in sorted(DIR_GUIONES.glob("guion_*.json")):
             self.assertIn(p.stem, esperado, f"guion sin predecir: {p.name}")

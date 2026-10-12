@@ -16,11 +16,11 @@ from typing import Optional, Tuple, Union
 from PIL import Image, ImageDraw, ImageFilter, ImageOps
 
 try:
-    from src.rutas import DIR_BYTE_TRANSPARENTES as DIR_TRANS, DIR_VFX, DIR_ARCHIVO
-    DIR_OUT = DIR_ARCHIVO / "assets_animaciones_byte"
+    from src.rutas import DIR_BYTE_TRANSPARENTES as DIR_TRANS, DIR_VFX, DIR_ANIMACIONES_BYTE
+    DIR_OUT = DIR_ANIMACIONES_BYTE
 except ImportError:
-    from rutas import DIR_BYTE_TRANSPARENTES as DIR_TRANS, DIR_VFX, DIR_ARCHIVO
-    DIR_OUT = DIR_ARCHIVO / "assets_animaciones_byte"
+    from rutas import DIR_BYTE_TRANSPARENTES as DIR_TRANS, DIR_VFX, DIR_ANIMACIONES_BYTE
+    DIR_OUT = DIR_ANIMACIONES_BYTE
 DIR_OUT.mkdir(parents=True, exist_ok=True)
 
 

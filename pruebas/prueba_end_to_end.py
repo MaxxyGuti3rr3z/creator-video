@@ -60,7 +60,6 @@ from src.rutas import (
     DIR_CACHE,
     DIR_CACHE_INDEX,
     DIR_PRUEBAS,
-    DIR_ARCHIVO,
     ruta_video,
     ruta_guion,
     ruta_sprite_byte

@@ -321,8 +321,8 @@ CONFIGS: Tuple[ConfigVideo, ...] = (
         id="12",
         claves=("12", "ciberseguridad", "google_ads"),
         claves_mockup=("ciberseguridad_google_ads", "ciberseguridad"),
-        nombre_base=None,          # se usa el stem del guion (caso histórico)
-        carpeta=None,              # videos/video_<stem> (caso histórico)
+        nombre_base=None,          # se usa el stem del guion (nombres de sprites/subtítulos)
+        carpeta="video_12_ciberseguridad_google_ads",
         claves_fondos=("12", "ciberseguridad", "google_ads"),
         generador_fondos="generar_video_interactivo_ciberseguridad_google_ads",
         etiqueta_fondos="Ciberseguridad y Google Ads (Video 12)",
@@ -334,8 +334,8 @@ CONFIGS: Tuple[ConfigVideo, ...] = (
         id="13",
         claves=("13", "noticias"),
         claves_mockup=("noticias_ia_realidad", "noticias"),
-        nombre_base=None,          # se usa el stem del guion (caso histórico)
-        carpeta=None,              # videos/video_<stem> (caso histórico)
+        nombre_base=None,          # se usa el stem del guion (nombres de sprites/subtítulos)
+        carpeta="video_13_noticias_ia_realidad",
         claves_fondos=("13", "noticias"),
         generador_fondos="generar_video_interactivo_noticias_ia_realidad",
         etiqueta_fondos="Noticias de IA (Video 13)",
@@ -347,8 +347,9 @@ CONFIGS: Tuple[ConfigVideo, ...] = (
 
 _POR_ID = {cfg.id: cfg for cfg in CONFIGS}
 
-# Orden histórico de cada bloque (replica el if/elif original)
-_ORDEN_CARPETA = ("03", "02", "04", "05", "06", "07", "08", "10", "11", "09", "01")
+# Orden histórico de cada bloque (replica el if/elif original; 12/13 ahora
+# tienen carpeta canónica explícita en su config)
+_ORDEN_CARPETA = ("13", "12", "03", "02", "04", "05", "06", "07", "08", "10", "11", "09", "01")
 _ORDEN_SPRITES = ("13", "12", "11", "10", "09", "08", "07", "04", "05", "06", "03", "02", "01")
 _ORDEN_FONDOS = ("03", "04", "02", "05", "06", "07", "08", "09", "10", "11", "12", "13")
 

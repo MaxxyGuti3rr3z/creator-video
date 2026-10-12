@@ -38,7 +38,6 @@ DIR_CACHE_INDEX = DIR_CACHE / "cache_audio_index.json"
 DIR_ANIMACIONES_BYTE = DIR_RAIZ / "assets_animaciones_byte"
 
 DIR_PRUEBAS = DIR_RAIZ / "pruebas"
-DIR_ARCHIVO = DIR_RAIZ / "_archivo"
 
 
 # ---------------------------------------------------------------------------
