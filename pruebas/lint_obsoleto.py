@@ -17,7 +17,7 @@ Cheques (por cada carpeta de videos/):
   sprites : assets/byte/transparentes/{clave}_{base}_transparente.png vs
             el sprite original (ruta_in de sprites_para) +
             src/shorts_assembler.py (dueño de quitar_fondo) (+ validez
-            > 5000 bytes, umbral del PASO 4 en prueba_end_to_end.py:845).
+            > 5000 bytes, umbral del PASO 4 en prueba_end_to_end.py:290).
   final   : final/*.mp4 vs el guion JSON, los fondos, los sprites, el
             video base y el código de ensamblaje (shorts_assembler,
             generar_animacion_byte, generar_paisaje_sonoro): el MP4
@@ -67,7 +67,7 @@ from src.rutas import (  # noqa: E402
 from src.registro_videos import resolver_carpeta, sprites_para  # noqa: E402
 
 MIN_FONDO_BYTES = 50_000   # umbral de generar_fondos_del_video (src/registro_videos.py:482)
-MIN_SPRITE_BYTES = 5_000   # umbral del PASO 4 (pruebas/prueba_end_to_end.py:845)
+MIN_SPRITE_BYTES = 5_000   # umbral del PASO 4 (pruebas/prueba_end_to_end.py:290)
 
 CHEQUES: Tuple[str, ...] = ("fondos", "sprites", "final")
 

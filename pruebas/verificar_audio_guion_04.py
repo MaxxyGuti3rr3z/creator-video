@@ -47,7 +47,7 @@ def main():
     print(f"Total caracteres (sin saltos): {len(texto_completo.replace('\n', ''))}")
     print(f"Total palabras: {len(texto_completo.split())}")
 
-    # Calcular hash de caché como en prueba_end_to_end.py
+    # Calcular hash de caché como en src/audio_elevenlabs.py
     voice_id = 'qd1yh69dLnH0MmK6EJwE'
     model_id = 'eleven_multilingual_v2'
     payload = f'{voice_id}_{model_id}_0.45_0.8_0.05_True_1.15_{texto_completo}'

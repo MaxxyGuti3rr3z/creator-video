@@ -39,6 +39,9 @@ proyecto/
 │  ├─ shorts_assembler.py               # Generación ASS karaoke, ensamble FFmpeg y aceleración
 │  ├─ generar_animacion_byte.py         # Motor de animación de Byte (clips MOV RGBA)
 │  ├─ generar_paisaje_sonoro.py         # Síntesis procedural SFX, BGM Synthwave y masterización
+│  ├─ bloques_narrativos.py             # Bloques narrativos y texto de narración (extraído del orquestador)
+│  ├─ audio_elevenlabs.py               # Caché SHA-256, API ElevenLabs y fallback (extraído)
+│  ├─ segmentacion.py                   # Segmentos visuales y frames de preview (extraído)
 │  └─ mockups/                          # Motor de interfaces interactivas por temática
 │     ├─ motor.py                       # Render unificado, paletas emocionales y pipe FFmpeg
 │     ├─ director_escena.py             # Orquestador de planos por video
@@ -66,6 +69,7 @@ proyecto/
 │  ├─ lint_subtitulos.py                # Linter: estilo y chunks del .ass karaoke
 │  ├─ lint_anti_template.py             # Linter: rotación anti-template entre videos consecutivos
 │  ├─ test_lint_*.py, test_chequeos_pipeline.py   # Suites de los linters (99 tests)
+│  ├─ test_pipeline_modulos.py           # Módulos extraídos del monolito (19 tests)
 │  └─ archivo_pruebas/                  # Tests unitarios del ensamblador
 ├─ cache/                               # Caché de audio determinista de ElevenLabs
 │  └─ cache_audio/                      # *.mp3, *_alignment.json, cache_audio_index.json
@@ -168,25 +172,27 @@ python pruebas/test_chequeos_pipeline.py
 # Catálogo de videos (6 tests)
 python pruebas/test_registro_videos.py
 
+# Partición del monolito: módulos src/ + orquestador (19 tests)
+python pruebas/test_pipeline_modulos.py
+
 # Ensamble de video (3 tests; ~2.5 min, genera artefactos)
 python pruebas/archivo_pruebas/test_shorts_assembler.py
 ```
 
-Además, `python pruebas/test_smoke_planos.py` es un smoke test visual que renderiza los
-49 planos y un clip cinematográfico (RC=0 = OK).
+**Total: 127 tests en 8 suites**, todos en verde. Además, `python pruebas/test_smoke_planos.py`
+es un smoke test visual que renderiza los 49 planos y un clip cinematográfico (RC=0 = OK).
 
 ---
 
 ## 📈 Estado del Proyecto
 
 - **14 videos** producidos (catálogo de 13 guiones maestros, `guiones/guion_02..14`).
-- **108 tests** automatizados en 7 suites (+ 1 smoke test visual), todos en verde.
+- **127 tests** automatizados en 8 suites (+ 1 smoke test visual), todos en verde.
 - **5 linters** de calidad cableados al pipeline; validación previa sin gastar créditos.
-- **8 / 10** — la nota la bajan tres cosas concretas:
+- **8.5 / 10** — la nota la bajan dos cosas concretas:
 
 | Pendiente | Impacto |
 |---|---|
-| Partir `pruebas/prueba_end_to_end.py` (~1000 líneas) en módulos | Mantenibilidad |
 | CI automático (hoy es repo local sin remoto) | Las suites se corren a mano |
 | Unificar las suites de previews (`test_previews_video_XX.py`) bajo un runner único | Experiencia de desarrollo |
 

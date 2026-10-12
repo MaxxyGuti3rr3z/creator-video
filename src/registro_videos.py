@@ -5,8 +5,9 @@ Una fila por video: carpetas, nombre_base, alias de búsqueda, generador de
 fondos, etiqueta de consola y set de sprites de Byte.
 
 Reemplaza los tres encadenamientos if/elif que vivían en
-`pruebas/prueba_end_to_end.py` (carpetas ~705, sprites ~850, fondos ~969)
-y que obligaban a tocar 3 lugares por cada video nuevo.
+`pruebas/prueba_end_to_end.py` y que obligaban a tocar 3 lugares por cada
+video nuevo; hoy el orquestador los invoca vía resolver_carpeta (~161),
+sprites_para (~285) y config_de_fondos (~313).
 
 Para agregar un video nuevo:
   1. Agregar una fila a CONFIGS (abajo).

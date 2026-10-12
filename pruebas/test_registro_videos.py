@@ -2,10 +2,11 @@
 Test de equivalencia: lógica histórica (if/elif de prueba_end_to_end.py)
 versus registro central src/registro_videos.py.
 
-Las funciones `_vieja_*` son copias literales de los bloques que vivían en
-pruebas/prueba_end_to_end.py (carpetas ~705, sprites ~850, overlay ~954,
-fondos ~969). Si este test pasa, el registro nuevo reproduce exactamente
-el comportamiento anterior.
+Las funciones `_vieja_*` son copias literales de los bloques originales del
+monolito de pruebas/prueba_end_to_end.py; hoy el orquestador los invoca como
+resolver_carpeta (~161), sprites_para (~285), overlay_vacio (~298) y
+config_de_fondos (~313). Si este test pasa, el registro nuevo reproduce
+exactamente el comportamiento anterior.
 
 Ejecutar: python pruebas/test_registro_videos.py
 """
