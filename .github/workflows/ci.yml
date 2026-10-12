@@ -1,0 +1,44 @@
+# CI en la nube — pipeline "Byte el Zorrito" (repo creator-video).
+# Ejecuta exactamente el mismo comando que el CI local:
+#   python pruebas/ci_local.py   -> 10 suites / 147 tests
+# Requiere ffmpeg (apt) y requirements.txt (pillow, rembg, onnxruntime...).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  suites:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Configurar Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Instalar dependencias
+        run: python -m pip install -r requirements.txt
+
+      - name: Correr suites (ci_local)
+        run: python pruebas/ci_local.py

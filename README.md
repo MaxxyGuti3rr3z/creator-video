@@ -1,5 +1,7 @@
 # Pipeline de Video Vertical - Byte el Zorrito (Shorts / Reels / TikTok)
 
+[![CI](https://github.com/MaxxyGuti3rr3z/creator-video/actions/workflows/ci.yml/badge.svg)](https://github.com/MaxxyGuti3rr3z/creator-video/actions/workflows/ci.yml)
+
 Pipeline automatizado para la creación de videos verticales de alta retención en formato **9:16 (1080x1920)** a **30 FPS** con narración procedural, sincronización karaoke palabra por palabra, mockups dinámicos con paleta emocional y animación del personaje Byte.
 
 ---
@@ -32,6 +34,7 @@ proyecto/
 │  ├─ rules/arquitectura_visual_variada.md
 │  └─ skills/director_visual_byte/
 ├─ .githooks/pre-push, .gitattributes    # CI local: hook pre-push y LF forzado en hooks
+├─ .github/workflows/ci.yml             # CI en la nube: ci_local en cada push/PR a main
 ├─ src/                                 # Motor principal del pipeline
 │  ├─ rutas.py                          # Gestor centralizado de rutas y directorios
 │  ├─ registro_videos.py                # Catálogo central: carpetas, fondos y sprites por video
@@ -199,6 +202,9 @@ python pruebas/archivo_pruebas/test_shorts_assembler.py
 **Total: 147 tests en 10 suites**, todos en verde. Además, `python pruebas/test_smoke_planos.py`
 es un smoke test visual que renderiza los 49 planos y un clip cinematográfico (RC=0 = OK).
 
+El mismo `ci_local.py` corre **en la nube**: GitHub Actions lo ejecuta en cada push/PR a `main`
+(`.github/workflows/ci.yml` — ubuntu + ffmpeg + Python 3.13).
+
 ### Previews visuales (runner único)
 
 ```bash
@@ -218,12 +224,9 @@ Renderiza PNG de diagnóstico en `videos/video_XX/intermedios/previews_director/
 - **14 videos** producidos (catálogo de 13 guiones maestros, `guiones/guion_02..14`).
 - **147 tests** automatizados en 10 suites (+ 1 smoke test visual), todos en verde.
 - **5 linters** de calidad cableados al pipeline; validación previa sin gastar créditos.
-- **CI local** con hook pre-push opcional (`python pruebas/ci_local.py --instalar-hook`).
-- **9 / 10** — la nota la baja una cosa concreta:
-
-| Pendiente | Impacto |
-|---|---|
-| CI en la nube (repo hoy local, sin remoto GitHub) | Los builds no corren externamente por push/PR; local sí hay hook pre-push |
+- **CI doble**: local (`python pruebas/ci_local.py` + hook pre-push opcional) y en la nube
+  (GitHub Actions en cada push/PR a `main`).
+- **10 / 10** — sin pendientes abiertos.
 
 ---
 
