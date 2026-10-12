@@ -31,6 +31,7 @@ proyecto/
 │  ├─ rules/puntuacion_guiones.md
 │  ├─ rules/arquitectura_visual_variada.md
 │  └─ skills/director_visual_byte/
+├─ .githooks/pre-push, .gitattributes    # CI local: hook pre-push y LF forzado en hooks
 ├─ src/                                 # Motor principal del pipeline
 │  ├─ rutas.py                          # Gestor centralizado de rutas y directorios
 │  ├─ registro_videos.py                # Catálogo central: carpetas, fondos y sprites por video
@@ -68,9 +69,12 @@ proyecto/
 │  ├─ lint_obsoleto.py                  # Linter: artefactos vencidos (fondos/sprites/final)
 │  ├─ lint_subtitulos.py                # Linter: estilo y chunks del .ass karaoke
 │  ├─ lint_anti_template.py             # Linter: rotación anti-template entre videos consecutivos
+│  ├─ ci_local.py                       # CI local: todas las suites con resumen + hook pre-push
+│  ├─ previews.py                       # Runner único de previews (PNG de diagnóstico)
 │  ├─ test_lint_*.py, test_chequeos_pipeline.py   # Suites de los linters (99 tests)
 │  ├─ test_pipeline_modulos.py           # Módulos extraídos del monolito (19 tests)
-│  └─ archivo_pruebas/                  # Tests unitarios del ensamblador
+│  ├─ test_runner_previews.py, test_ci_local.py  # Tests de los runners (20 tests)
+│  └─ archivo_pruebas/                  # Tests unitarios del ensamblador (3 tests)
 ├─ cache/                               # Caché de audio determinista de ElevenLabs
 │  └─ cache_audio/                      # *.mp3, *_alignment.json, cache_audio_index.json
 ```
@@ -162,6 +166,13 @@ python pruebas/lint_anti_template.py guiones/guion_15_nuevo.json
 ## 🧪 Pruebas Unitarias
 
 ```bash
+# CI local (recomendado): todas las suites con resumen y exit code (~1 min, requiere ffmpeg)
+python pruebas/ci_local.py
+python pruebas/ci_local.py --sin-ffmpeg    # solo suites sin ffmpeg (~3 s)
+python pruebas/ci_local.py --lista         # qué corre cada modo
+python pruebas/ci_local.py --instalar-hook # hook pre-push .githooks (saltar: git push --no-verify)
+
+# Corrida individual de suites
 # Suites de validación (99 tests)
 python pruebas/test_lint_zonas.py
 python pruebas/test_lint_obsoleto.py
@@ -178,11 +189,14 @@ python pruebas/test_pipeline_modulos.py
 # Runner de previews: registro y CLI (8 tests, no renderiza)
 python pruebas/test_runner_previews.py
 
-# Ensamble de video (3 tests; ~2.5 min, genera artefactos)
+# CI local: registro, parseo y CLI (12 tests, no corre las suites)
+python pruebas/test_ci_local.py
+
+# Ensamble de video (3 tests; ~1 min, genera artefactos)
 python pruebas/archivo_pruebas/test_shorts_assembler.py
 ```
 
-**Total: 135 tests en 9 suites**, todos en verde. Además, `python pruebas/test_smoke_planos.py`
+**Total: 147 tests en 10 suites**, todos en verde. Además, `python pruebas/test_smoke_planos.py`
 es un smoke test visual que renderiza los 49 planos y un clip cinematográfico (RC=0 = OK).
 
 ### Previews visuales (runner único)
@@ -202,14 +216,14 @@ Renderiza PNG de diagnóstico en `videos/video_XX/intermedios/previews_director/
 ## 📈 Estado del Proyecto
 
 - **14 videos** producidos (catálogo de 13 guiones maestros, `guiones/guion_02..14`).
-- **135 tests** automatizados en 9 suites (+ 1 smoke test visual), todos en verde.
+- **147 tests** automatizados en 10 suites (+ 1 smoke test visual), todos en verde.
 - **5 linters** de calidad cableados al pipeline; validación previa sin gastar créditos.
-- **8.5 / 10** — la nota la bajan dos cosas concretas:
+- **CI local** con hook pre-push opcional (`python pruebas/ci_local.py --instalar-hook`).
+- **9 / 10** — la nota la baja una cosa concreta:
 
 | Pendiente | Impacto |
 |---|---|
-| CI automático (hoy es repo local sin remoto) | Las suites se corren a mano |
-| Unificar las suites de previews (`test_previews_video_XX.py`) bajo un runner único | Experiencia de desarrollo |
+| CI en la nube (repo hoy local, sin remoto GitHub) | Los builds no corren externamente por push/PR; local sí hay hook pre-push |
 
 ---
 

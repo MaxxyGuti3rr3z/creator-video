@@ -1,0 +1,4 @@
+# Reglas puntuales de normalización (no tocar el resto del repo).
+# Los hooks deben quedar con LF en el working tree aunque core.autocrlf=true
+# convierta a CRLF al checkout; con CRLF el shebang #!/bin/sh se rompe.
+.githooks/** text eol=lf

@@ -1,0 +1,6 @@
+#!/bin/sh
+# Pre-push hook — corre las suites locales antes de pushear.
+# Instalar:   python pruebas/ci_local.py --instalar-hook
+# Desinstalar: git config --unset core.hooksPath
+# Saltear:     git push --no-verify
+exec python pruebas/ci_local.py
