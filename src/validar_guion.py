@@ -120,7 +120,11 @@ def validar_guion(ruta_guion: Path) -> Dict[str, Any]:
 
 if __name__ == "__main__":
     import sys
-    ruta = Path("guiones/guion_04_correo.json")
+    try:
+        from src.rutas import DIR_GUIONES
+    except ImportError:
+        from rutas import DIR_GUIONES
+    ruta = DIR_GUIONES / "guion_04_correo.json"
     if len(sys.argv) > 1:
         ruta = Path(sys.argv[1])
     res = validar_guion(ruta)

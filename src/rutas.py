@@ -33,6 +33,10 @@ DIR_VIDEOS = DIR_RAIZ / "videos"
 DIR_CACHE = DIR_RAIZ / "cache" / "cache_audio"
 DIR_CACHE_INDEX = DIR_CACHE / "cache_audio_index.json"
 
+# Caché regenerable de capas MOV de Byte (escritorio/shorts); se regenera
+# con src.generar_animacion_byte si se borra.
+DIR_ANIMACIONES_BYTE = DIR_RAIZ / "assets_animaciones_byte"
+
 DIR_PRUEBAS = DIR_RAIZ / "pruebas"
 DIR_ARCHIVO = DIR_RAIZ / "_archivo"
 

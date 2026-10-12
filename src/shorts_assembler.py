@@ -27,6 +27,11 @@ import subprocess
 import unicodedata
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+try:
+    from src.rutas import DIR_FONDOS, DIR_ANIMACIONES_BYTE
+except ImportError:
+    from rutas import DIR_FONDOS, DIR_ANIMACIONES_BYTE
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -810,7 +815,7 @@ def ensamblar_video(
 
     # Asegurar fondos texturados para cada escena si no fueron provistos
     if fondos is None:
-        dir_fondos = Path("assets_fondos")
+        dir_fondos = DIR_FONDOS
         dir_fondos.mkdir(parents=True, exist_ok=True)
         rutas_fondos = []
         for i in range(num_clips):
@@ -851,7 +856,7 @@ def ensamblar_video(
 
     # Resolver o generar capas de Byte animadas con poses dinámicas, micro-saltos y VFX
     rutas_fg = []
-    dir_animaciones_byte = Path("assets_animaciones_byte")
+    dir_animaciones_byte = DIR_ANIMACIONES_BYTE
     dir_animaciones_byte.mkdir(parents=True, exist_ok=True)
 
     for i, dur in enumerate(clip_durations):
