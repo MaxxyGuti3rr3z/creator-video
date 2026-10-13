@@ -163,9 +163,24 @@ class TestBadgeYPildora(unittest.TestCase):
         frame = self._frame()
         _pildora(frame, 1080, "PREGUNTA LARGA DE PRUEBA", t_sec=1.0)
         pix = frame.load()
-        r, g, b, _a = pix[540, 825]
-        # Píldora con texto completo: píxel del texto/blanco o borde celeste
-        self.assertTrue(r > 120 or b > 150, f"píxel inesperado {(r, g, b)}")
+        # Anclaje: la pildora (h=70) esta centrada en y=825 -> ocupa y=790..859;
+        # en x=540 (centro horizontal) el borde y el relleno son estables sin
+        # depender de la fuente.
+        self.assertNotEqual(pix[540, 792][:3], (0, 0, 0), "interior superior de la pildora")
+        self.assertNotEqual(pix[540, 857][:3], (0, 0, 0), "interior inferior de la pildora")
+        self.assertEqual(pix[540, 783][:3], (0, 0, 0), "sobre la pildora debe quedar negro")
+        self.assertEqual(pix[540, 867][:3], (0, 0, 0), "bajo la pildora debe quedar negro")
+        # Typing completo: t_sec=1.0 supera t0=0.25 a 30 cps -> hay texto
+        # blanco renderizado. Se busca en la franja central en vez de un unico
+        # pixedel: Arial (Windows) y load_default() (ubuntu) colocan los glifos
+        # en posiciones distintas y el centro exacto puede caer en un hueco.
+        blancos = 0
+        for y in range(805, 846):
+            for x in range(1080):
+                r, g, b, _a = pix[x, y]
+                if r > 200 and g > 200 and b > 200:
+                    blancos += 1
+        self.assertGreater(blancos, 50, "el typing no dejo texto blanco visible")
 
     def test_pildora_vacia_antes_de_t0(self):
         frame = self._frame()
