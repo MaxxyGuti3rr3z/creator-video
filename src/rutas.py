@@ -39,6 +39,11 @@ DIR_ANIMACIONES_BYTE = DIR_RAIZ / "assets_animaciones_byte"
 
 DIR_PRUEBAS = DIR_RAIZ / "pruebas"
 
+# Registro histórico de experimentos (variantes de gancho A/B test); es un
+# CSV append-only rastreado por git. Se lee con src.registro_experimentos.
+DIR_DATOS = DIR_RAIZ / "datos"
+RUTA_EXPERIMENTOS = DIR_DATOS / "experimentos.csv"
+
 
 # ---------------------------------------------------------------------------
 # Funciones de Resolución

@@ -84,6 +84,14 @@ from src.mockups.planos.video_13_noticias import (
     renderizar_plano_noticias_aceleracion_editorial,
     renderizar_plano_noticias_cierre_encuesta_futuro,
 )
+from src.mockups.planos.video_15_celular import (
+    renderizar_plano_celu_popup_sospecha,
+    renderizar_plano_wake_word,
+    renderizar_plano_circle_to_search,
+    renderizar_plano_ios_resumen_notif,
+    renderizar_plano_celu_primero_nube,
+    renderizar_plano_cierre_rara_frase,
+)
 
 from src.mockups.planos.router import (
     MAPA_ARQUETIPOS,
@@ -100,6 +108,7 @@ from src.mockups.planos.wrappers import (
     CONFIGS_CIBERSEGURIDAD_GOOGLE_ADS,
     CONFIGS_NOTICIAS_IA_REALIDAD,
     CONFIGS_AGUA_IA,
+    CONFIGS_CELULAR_IA,
     generar_video_interactivo_atencion_clientes,
     generar_video_interactivo_excel_reportes,
     generar_video_interactivo_busqueda_investigacion,
@@ -109,6 +118,7 @@ from src.mockups.planos.wrappers import (
     generar_video_interactivo_ciberseguridad_google_ads,
     generar_video_interactivo_noticias_ia_realidad,
     generar_video_interactivo_agua_ia,
+    generar_video_interactivo_celular_ia,
 )
 
 __all__ = [
@@ -165,6 +175,12 @@ __all__ = [
     "renderizar_plano_noticias_ciencia_clima_materiales",
     "renderizar_plano_noticias_aceleracion_editorial",
     "renderizar_plano_noticias_cierre_encuesta_futuro",
+    "renderizar_plano_celu_popup_sospecha",
+    "renderizar_plano_wake_word",
+    "renderizar_plano_circle_to_search",
+    "renderizar_plano_ios_resumen_notif",
+    "renderizar_plano_celu_primero_nube",
+    "renderizar_plano_cierre_rara_frase",
     "MAPA_ARQUETIPOS",
     "renderizar_escena_por_arquetipo",
     "generar_video_cinematico_escena",
@@ -177,6 +193,7 @@ __all__ = [
     "CONFIGS_CIBERSEGURIDAD_GOOGLE_ADS",
     "CONFIGS_NOTICIAS_IA_REALIDAD",
     "CONFIGS_AGUA_IA",
+    "CONFIGS_CELULAR_IA",
     "generar_video_interactivo_atencion_clientes",
     "generar_video_interactivo_excel_reportes",
     "generar_video_interactivo_busqueda_investigacion",
@@ -186,6 +203,7 @@ __all__ = [
     "generar_video_interactivo_ciberseguridad_google_ads",
     "generar_video_interactivo_noticias_ia_realidad",
     "generar_video_interactivo_agua_ia",
+    "generar_video_interactivo_celular_ia",
     "dibujar_icono_alerta",
     "dibujar_icono_cruz",
     "dibujar_icono_candado",

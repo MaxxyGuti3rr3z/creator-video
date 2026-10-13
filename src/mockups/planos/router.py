@@ -75,6 +75,14 @@ from src.mockups.planos.video_13_noticias import (
     renderizar_plano_noticias_aceleracion_editorial,
     renderizar_plano_noticias_cierre_encuesta_futuro,
 )
+from src.mockups.planos.video_15_celular import (
+    renderizar_plano_celu_popup_sospecha,
+    renderizar_plano_wake_word,
+    renderizar_plano_circle_to_search,
+    renderizar_plano_ios_resumen_notif,
+    renderizar_plano_celu_primero_nube,
+    renderizar_plano_cierre_rara_frase,
+)
 
 
 MAPA_ARQUETIPOS = {
@@ -128,6 +136,12 @@ MAPA_ARQUETIPOS = {
     "PLANO_NOTICIAS_CIENCIA_CLIMA_MATERIALES": renderizar_plano_noticias_ciencia_clima_materiales,
     "PLANO_NOTICIAS_ACELERACION_EDITORIAL": renderizar_plano_noticias_aceleracion_editorial,
     "PLANO_NOTICIAS_CIERRE_ENCUESTA_FUTURO": renderizar_plano_noticias_cierre_encuesta_futuro,
+    "PLANO_CELU_POPUP_SOSPECHA": renderizar_plano_celu_popup_sospecha,
+    "PLANO_WAKE_WORD": renderizar_plano_wake_word,
+    "PLANO_CIRCLE_TO_SEARCH": renderizar_plano_circle_to_search,
+    "PLANO_IOS_RESUMEN_NOTIF": renderizar_plano_ios_resumen_notif,
+    "PLANO_CELU_PRIMERO_NUBE": renderizar_plano_celu_primero_nube,
+    "PLANO_CIERRE_RARA_FRASE": renderizar_plano_cierre_rara_frase,
 }
 
 

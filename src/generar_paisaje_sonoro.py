@@ -7,7 +7,7 @@ para ser mezclados por FFmpeg con precisión de milisegundos.
 """
 
 from pathlib import Path
-from typing import Union, Optional, List, Dict, Any
+from typing import Union, Optional, List, Dict, Any, Tuple
 import numpy as np
 import scipy.io.wavfile as wavfile
 
@@ -81,6 +81,43 @@ def generar_sfx_bounce(ruta_wav: Path, sample_rate: int = 44100):
     env = np.exp(-t / 0.08)
     signal = np.sin(phase) * env
     signal = signal / np.max(np.abs(signal) + 1e-6) * 0.65
+    wavfile.write(str(ruta_wav), sample_rate, (signal * 32767).astype(np.int16))
+
+
+def generar_sfx_riser(ruta_wav: Path, sample_rate: int = 44100):
+    """Riser de anticipación (~0.85s): barrido ascendente + ruido que sube,
+    para colocar justo ANTES del segmento payoff (resultado/cierre)."""
+    dur = 0.85
+    t = np.linspace(0, dur, int(sample_rate * dur), endpoint=False)
+    # Tono: ~2 octavas ascendentes (220 -> 880 Hz) con envolvente creciente
+    freq = 220.0 * (2.0 ** (2.0 * (t / dur)))
+    phase = 2 * np.pi * np.cumsum(freq) / sample_rate
+    tono = np.sin(phase)
+    # Ruido filtrado en paso (aproximación: ruido con amplitud creciente)
+    ruido = np.random.uniform(-1, 1, len(t))
+    env = (t / dur) ** 2.2
+    signal = (0.55 * tono + 0.45 * ruido) * env
+    # Pequeño remate final para enganchar al impacto
+    signal[-int(0.03 * sample_rate):] *= np.linspace(1.0, 0.6, int(0.03 * sample_rate))
+    signal = signal / np.max(np.abs(signal) + 1e-6) * 0.7
+    wavfile.write(str(ruta_wav), sample_rate, (signal * 32767).astype(np.int16))
+
+
+def generar_sfx_impact(ruta_wav: Path, sample_rate: int = 44100):
+    """Impacto suave de payoff (~0.5s): sub-gravedad que cae + golpe de ruido
+    corto, para capas con el chime en el momento resultado."""
+    dur = 0.5
+    t = np.linspace(0, dur, int(sample_rate * dur), endpoint=False)
+    # Sub: barrido descendente 110 -> 48 Hz
+    freq = 110.0 * np.exp(-t / 0.18) + 48.0
+    phase = 2 * np.pi * np.cumsum(freq) / sample_rate
+    sub = np.sin(phase) * np.exp(-t / 0.16)
+    # Golpe de ruido corto (transiente)
+    n = int(0.06 * sample_rate)
+    golpe = np.zeros_like(t)
+    golpe[:n] = np.random.uniform(-1, 1, n) * np.exp(-t[:n] / 0.015)
+    signal = 0.8 * sub + 0.35 * golpe
+    signal = signal / np.max(np.abs(signal) + 1e-6) * 0.75
     wavfile.write(str(ruta_wav), sample_rate, (signal * 32767).astype(np.int16))
 
 
@@ -245,6 +282,8 @@ def generar_todos_los_sfx(dir_sfx: Path) -> dict:
         "slide": dir_sfx / "sfx_slide.wav",
         "chime": dir_sfx / "sfx_chime.wav",
         "bounce": dir_sfx / "sfx_bounce.wav",
+        "riser": dir_sfx / "sfx_riser.wav",
+        "impact": dir_sfx / "sfx_impact.wav",
         "musica": dir_sfx / "musica_fondo.wav",
     }
 
@@ -258,10 +297,57 @@ def generar_todos_los_sfx(dir_sfx: Path) -> dict:
         generar_sfx_chime(rutas["chime"])
     if not rutas["bounce"].exists():
         generar_sfx_bounce(rutas["bounce"])
+    if not rutas["riser"].exists():
+        generar_sfx_riser(rutas["riser"])
+    if not rutas["impact"].exists():
+        generar_sfx_impact(rutas["impact"])
     # Siempre regenerar música para aplicar el nuevo motor synthwave
     generar_musica_fondo_tech(rutas["musica"], duracion_total=35.0)
 
     return rutas
+
+
+def _planificar_sfx(segmentos: List[Dict[str, Any]]) -> List[Tuple[str, float, float]]:
+    """
+    Planifica los SFX a partir de los segmentos reales del video (con 'tipo' e 'inicio'):
+      - escena 0:        whoosh de apertura + bounce de entrada
+      - cada transición: whoosh antes del corte + bounce en la entrada de la nueva escena
+      - payoff:          riser de anticipación 0.85s antes de 'resultado' (o 'cierre'),
+                         e impacto + chime en el inicio del payoff
+      - 'punto_1/2':     click + slide de interacción a mitad del primer segundo de demo
+    Devuelve tuplas (nombre_sfx, t_segundo, volumen).
+    """
+    plan: List[Tuple[str, float, float]] = []
+    if not segmentos:
+        plan.append(("whoosh", 0.0, 0.35))
+        return plan
+
+    ordenados = sorted(segmentos, key=lambda s: float(s.get("inicio", 0.0)))
+    for i, seg in enumerate(ordenados):
+        t0 = float(seg.get("inicio", 0.0))
+        tipo = str(seg.get("tipo", ""))
+        if i == 0:
+            plan.append(("whoosh", 0.0, 0.35))
+            plan.append(("bounce", 0.08, 0.30))
+        else:
+            plan.append(("whoosh", max(0.0, t0 - 0.15), 0.38))
+            plan.append(("bounce", t0 + 0.08, 0.30))
+        if tipo == "resultado":
+            plan.append(("chime", t0 + 0.22, 0.65))
+        elif tipo in ("punto_1", "punto_2", "demostracion_1", "demostracion_2"):
+            plan.append(("click", t0 + 1.2, 0.70))
+            plan.append(("slide", t0 + 1.7, 0.45))
+
+    # Payoff: riser de anticipación + impacto (si no hay 'resultado', el
+    # 'cierre' actúa como payoff final)
+    payoff = next((s for s in ordenados if str(s.get("tipo", "")) == "resultado"), None)
+    if payoff is None:
+        payoff = next((s for s in ordenados if str(s.get("tipo", "")) == "cierre"), None)
+    if payoff is not None:
+        t0p = float(payoff.get("inicio", 0.0))
+        plan.append(("riser", max(0.0, t0p - 0.85), 0.50))
+        plan.append(("impact", t0p + 0.22, 0.55))
+    return plan
 
 
 def mezclar_paisaje_sonoro_completo(
@@ -369,30 +455,9 @@ def mezclar_paisaje_sonoro_completo(
         if len_inject > 0:
             master[idx_ini:idx_fin] += s_stereo[:len_inject]
 
-    # 4. Efectos sincronizados con las escenas
-    if segmentos and len(segmentos) >= 4:
-        inyectar_sfx(sfx_dict["whoosh"], 0.0, 0.35)
-        inyectar_sfx(sfx_dict["bounce"], 0.08, 0.30)
-
-        t_seg1 = segmentos[1].get("inicio", 4.88)
-        inyectar_sfx(sfx_dict["whoosh"], max(0, t_seg1 - 0.15), 0.38)
-        inyectar_sfx(sfx_dict["bounce"], t_seg1 + 0.08, 0.30)
-
-        t_seg2 = segmentos[2].get("inicio", 13.88)
-        inyectar_sfx(sfx_dict["whoosh"], max(0, t_seg2 - 0.15), 0.38)
-        inyectar_sfx(sfx_dict["bounce"], t_seg2 + 0.08, 0.30)
-        inyectar_sfx(sfx_dict["click"], t_seg2 + 2.0, 0.70)
-        inyectar_sfx(sfx_dict["slide"], t_seg2 + 2.5, 0.45)
-
-        t_seg3 = segmentos[3].get("inicio", 26.40)
-        inyectar_sfx(sfx_dict["whoosh"], max(0, t_seg3 - 0.15), 0.38)
-        inyectar_sfx(sfx_dict["bounce"], t_seg3 + 0.08, 0.30)
-        inyectar_sfx(sfx_dict["chime"], t_seg3 + 0.22, 0.65)
-    else:
-        inyectar_sfx(sfx_dict["whoosh"], 0.0, 0.35)
-        inyectar_sfx(sfx_dict["click"], 15.88, 0.70)
-        inyectar_sfx(sfx_dict["slide"], 16.38, 0.45)
-        inyectar_sfx(sfx_dict["chime"], 26.60, 0.60)
+    # 4. Efectos sincronizados con las escenas (planificados por tipo de segmento)
+    for nombre_sfx, t_seg, vol in _planificar_sfx(segmentos or []):
+        inyectar_sfx(sfx_dict[nombre_sfx], t_seg, vol)
 
     # 5. Master Limiter
     pico_master = np.max(np.abs(master))

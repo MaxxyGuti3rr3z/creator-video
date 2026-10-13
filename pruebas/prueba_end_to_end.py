@@ -22,6 +22,19 @@ Uso:
                       final). Sin este flag, el pipeline termina con exit 1 si el
                       video tiene contenido en zonas prohibidas (no publicar).
 
+    --sin-enfasis    Desactiva el punch-in de énfasis (zoom breve sobre el
+                      fondo+mockup en el inicio de palabra de cada escena; ver
+                      src/enfasis.py). Activo por defecto en videos NO
+                      cinemáticos (los cinemáticos tienen Byte horneado en el
+                      bg y quedan excluidos para no escalarlo).
+
+    --variantes-gancho=N   Renderiza N variantes VISUALES del gancho (clip 0)
+                      con el mismo audio y ASS (0 créditos; ver
+                      src/director_gancho.py). Default N=1 (solo la variante
+                      de producción). Con N>1 las variantes extra quedan en
+                      intermedios/variantes/ como material de A/B test; el
+                      video de final/ es siempre la variante de producción.
+
 1. Guion real estructurado.
 2. Audio y alignment (ElevenLabs with timestamps o generador de alta fidelidad).
    DIAGNÓSTICO 1: Impresión completa de 'characters' y confirmación visual de caracteres españoles (á,é,í,ó,ú,ñ,¿,¡).
@@ -69,9 +82,12 @@ from src.rutas import (
     DIR_RAIZ,
     DIR_BYTE_TRANSPARENTES,
     DIR_GUIONES,
+    RUTA_EXPERIMENTOS,
     ruta_video,
     ruta_guion,
 )
+
+from src.registro_experimentos import Experimento, registrar_experimento
 
 from src.shorts_assembler import (
     generar_ass,
@@ -107,6 +123,10 @@ from src.audio_elevenlabs import (
 )
 
 from src.segmentacion import calcular_segmentos_reales, extraer_frames_preview
+
+from src.enfasis import seleccionar_puntos_enfasis
+from src.eventos_voz import palabras_de_segmento
+from src.director_gancho import seleccionar_para_produccion, variantes_gancho
 
 # Cargar explícitamente variables de entorno desde el .env del proyecto
 from dotenv import load_dotenv
@@ -199,6 +219,8 @@ def main() -> int:
     # Escape de las validaciones automáticas (pre-vuelo/post-vuelo)
     saltar_validacion = "--saltar-validacion" in sys.argv
     sin_chequeo_final = "--sin-chequeo-final" in sys.argv
+    # Punch-in de énfasis (zoom breve sobre bg+mockup; se desactiva con flag)
+    sin_enfasis = "--sin-enfasis" in sys.argv
 
     mockup_sugerido = guion.get("mockup_sugerido", "bandeja_correo")
 
@@ -323,7 +345,9 @@ def main() -> int:
     if cfg_fondos is not None:
         modo = "FORZADO" if forzar_fondos else "caché si existen"
         print(f"\n[MOCKUP] Generando fondos de {cfg_fondos.etiqueta_fondos} ({modo})...")
-        rutas_fondos = generar_fondos_del_video(cfg_fondos, segmentos_reales, dir_fondos, forzar=forzar_fondos)
+        rutas_fondos = generar_fondos_del_video(
+            cfg_fondos, segmentos_reales, dir_fondos, forzar=forzar_fondos, alignment=alignment
+        )
 
 
     # -------------------------------------------------------------
@@ -359,42 +383,142 @@ def main() -> int:
             print("\n[PIPELINE] Abortado por el CHEQUEO ASS (subtítulos fuera de especificación).")
             return 1
 
-    ruta_mp4_base = dir_intermedios / f"video_{nombre_base}_base.mp4"
-    ensamblar_video(
-        imagenes=rutas_imagenes_overlay,
-        audio=ruta_audio,
-        archivo_ass=ruta_ass,
-        duracion_total=duracion_audio,
-        segmentos=segmentos_reales,
-        ruta_salida=ruta_mp4_base,
-        fondos=rutas_fondos if rutas_fondos else None,
-        fade_duration=0.15
-    )
+    # Punch-in de énfasis: solo en videos NO cinemáticos (en los cinemáticos
+    # Byte está horneado en el bg y el zoom lo escalaría fuera de safe zones).
+    # Candidatos: inicios de palabra (≥4 letras) de cada escena, tiempo local.
+    puntos_enfasis: Optional[list] = None
+    if sin_enfasis:
+        logger.info("Punch-in de énfasis DESACTIVADO (--sin-enfasis).")
+    elif overlay_vacio(nombre_base):
+        logger.info(
+            "Punch-in de énfasis omitido: video cinemático "
+            "(Byte horneado en el fondo; el zoom lo escaló fuera de safe zones)."
+        )
+    else:
+        puntos_enfasis = []
+        for seg in segmentos_reales:
+            inicio_seg = float(seg.get("inicio", 0.0))
+            dur_seg = max(0.0, float(seg.get("fin", inicio_seg)) - inicio_seg)
+            candidatos = [
+                max(0.0, t_ini - inicio_seg)
+                for palabra, t_ini, _t_fin in palabras_de_segmento(seg, alignment)
+                if len(palabra) >= 4
+            ]
+            puntos = seleccionar_puntos_enfasis(candidatos, dur_seg)
+            puntos_enfasis.append(puntos)
+            if puntos:
+                logger.info(
+                    f"Enfasis escena {seg.get('tipo', '?')}: "
+                    f"{len(puntos)} punch-in en t={[round(p.t_inicio, 2) for p in puntos]}"
+                )
 
-    # -------------------------------------------------------------
-    # PASO 6: Post-procesamiento: aceleración sincronizada (1.12x)
-    # -------------------------------------------------------------
+    # Variantes VISUALES del gancho (mismo audio/ASS => 0 créditos). La
+    # variante de producción (A, o la preferida en ConfigVideo.gancho_preferido)
+    # va a final/; con N>1 las demás quedan en intermedios/variantes/.
+    variantes_gancho_n = 1
+    for _arg in sys.argv:
+        if _arg.startswith("--variantes-gancho="):
+            try:
+                variantes_gancho_n = max(1, int(_arg.split("=", 1)[1]))
+            except ValueError:
+                logger.warning(f"Valor inválido en --variantes-gancho: {_arg}")
+
+    numero_video = int(guion.get("video", 0) or 0)
+    preferido_gancho = getattr(cfg_fondos, "gancho_preferido", None) if cfg_fondos else None
+    variantes = variantes_gancho(numero_video, arquetipo_preferido=preferido_gancho)
+    prod_gancho = seleccionar_para_produccion(variantes)
+    if variantes_gancho_n > 1 and len(variantes) > 1:
+        variantes_a_render = list(variantes[:variantes_gancho_n])
+    else:
+        variantes_a_render = [prod_gancho]
+
     factor_aceleracion = 1.12
-    ruta_mp4 = dir_final / f"video_{nombre_base}.mp4"
-    acelerar_video(
-        ruta_video_entrada=ruta_mp4_base,
-        factor=factor_aceleracion,
-        ruta_salida=ruta_mp4
-    )
-
     duracion_esperada_acelerada = duracion_audio / factor_aceleracion
     ppm_acelerado = num_palabras / (duracion_esperada_acelerada / 60.0)
+    ruta_mp4 = dir_final / f"video_{nombre_base}.mp4"
+    es_valido = True
+
+    for v in variantes_a_render:
+        es_prod = (v is None) or (prod_gancho is not None and v.id == prod_gancho.id)
+        # La variante de producción usa el nombre histórico del base (lo espera
+        # lint_obsoleto); las demás llevan sufijo de variante.
+        sufijo = "" if es_prod else f"_{v.id}"
+        ruta_base_v = dir_intermedios / f"video_{nombre_base}_base{sufijo}.mp4"
+        var_param = None if (v is None or v.arquetipo == "texto_pantalla") else v.arquetipo
+
+        ensamblar_video(
+            imagenes=rutas_imagenes_overlay,
+            audio=ruta_audio,
+            archivo_ass=ruta_ass,
+            duracion_total=duracion_audio,
+            segmentos=segmentos_reales,
+            ruta_salida=ruta_base_v,
+            fondos=rutas_fondos if rutas_fondos else None,
+            fade_duration=0.15,
+            puntos_enfasis=puntos_enfasis,
+            variante_gancho=var_param
+        )
+
+        # -------------------------------------------------------------
+        # PASO 6: Post-procesamiento: aceleración sincronizada (1.12x)
+        # -------------------------------------------------------------
+        if es_prod:
+            ruta_out_v = ruta_mp4
+        else:
+            dir_variantes = dir_intermedios / "variantes"
+            dir_variantes.mkdir(parents=True, exist_ok=True)
+            ruta_out_v = dir_variantes / f"video_{nombre_base}_var_{v.id}.mp4"
+        acelerar_video(
+            ruta_video_entrada=ruta_base_v,
+            factor=factor_aceleracion,
+            ruta_salida=ruta_out_v
+        )
+
+        # -------------------------------------------------------------
+        # PASO 7: Validación de la variante acelerada
+        # -------------------------------------------------------------
+        ok_v = validar_output(ruta_out_v, duracion_esperada=duracion_esperada_acelerada, tolerancia=0.15)
+        etiqueta_v = f"{v.id} ({v.arquetipo})" if v else "única"
+        print(f"\n[VARIANTE {etiqueta_v}] {'APROBADA' if ok_v else 'FALLIDA'} -> {ruta_out_v.name}")
+        cod_v = 0
+        if not sin_chequeo_final:
+            cod_v = post_vuelo(ruta_out_v)
+            if cod_v != 0:
+                es_valido = False
+        if es_prod:
+            es_valido = es_valido and ok_v
+
+        # Registro histórico del experimento (append-only, git-rastreable)
+        try:
+            registrar_experimento(
+                RUTA_EXPERIMENTOS,
+                Experimento(
+                    video=numero_video,
+                    variante_id=v.id if v else "-",
+                    arquetipo_gancho=v.arquetipo if v else "-",
+                    punch_enfasis=bool(puntos_enfasis),
+                    ruta_mp4=str(ruta_out_v),
+                    notas=(
+                        f"ffprobe={'ok' if ok_v else 'fail'};"
+                        f"post_vuelo={'skip' if sin_chequeo_final else ('ok' if cod_v == 0 else 'fail')}"
+                    ),
+                ),
+            )
+            logger.info(f"Experimento registrado en {RUTA_EXPERIMENTOS.name}")
+        except OSError as e:
+            logger.warning(f"No se pudo registrar el experimento: {e}")
 
     print("\n" + "=" * 65)
     print(f" [POST-PROCESAMIENTO] Aceleración {factor_aceleracion}x aplicada con FFmpeg:")
     print(f"  • Duración base original  : {duracion_audio:.2f}s (PPM: {ppm:.1f})")
     print(f"  • Duración final acelerada: {duracion_esperada_acelerada:.2f}s (PPM: {ppm_acelerado:.1f})")
+    print(f"  • Variantes de gancho     : {len(variantes_a_render)} (producción: "
+          f"{prod_gancho.id if prod_gancho else 'única'})")
     print("=" * 65 + "\n")
 
     # -------------------------------------------------------------
-    # PASO 7: Validación y Captura de frames del video acelerado
+    # PASO 7 (cont.): Captura de frames de la variante de producción
     # -------------------------------------------------------------
-    es_valido = validar_output(ruta_mp4, duracion_esperada=duracion_esperada_acelerada, tolerancia=0.15)
     segmentos_acelerados = [
         {"tipo": s["tipo"], "inicio": s["inicio"] / factor_aceleracion, "fin": s["fin"] / factor_aceleracion}
         for s in segmentos_reales
@@ -422,9 +546,7 @@ def main() -> int:
         print(f"      - {f.name} ({f.resolve()})")
     print("=" * 65)
 
-    codigo_final = 0
-    if not sin_chequeo_final:
-        codigo_final = post_vuelo(ruta_mp4)
+    codigo_final = 0 if es_valido else 1
     return codigo_final
 
 

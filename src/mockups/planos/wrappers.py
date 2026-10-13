@@ -854,3 +854,131 @@ def generar_video_interactivo_agua_ia(
         ancho=ancho,
         alto=alto
     )
+
+
+# ---------------------------------------------------------------------------
+# Configuración de Escenas para Video 15 (IA en tu celular)
+# ---------------------------------------------------------------------------
+CONFIGS_CELULAR_IA = {
+    "cold_open": ("PLANO_CELU_POPUP_SOSPECHA", {
+        "estilo_fondo": "viaje_espacial",
+        "badge": "DICEN QUE TU CELU TE ESCUCHA",
+        "ui_clave": ["escucha"],
+        "notif_tit": "Asistente IA",
+        "notif_lineas": [
+            "'¿Seguimos escuchando?' hace 1 min",
+            "Se activó sola, sin que la tocaras",
+        ],
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "cold_open_guion_15_ia_celular_transparente.png",
+    }),
+    "hook": ("PLANO_CELU_POPUP_SOSPECHA", {
+        "estilo_fondo": "viaje_espacial",
+        "badge": "EL MITO NO PARA DE VOLVER",
+        "ui_clave": ["miedo"],
+        "notif_col": (245, 158, 11),
+        "notif_tit": "Noticias virales",
+        "notif_lineas": [
+            "'Tu celular te escucha 24/7'",
+            "Otra vez lo comparten sin fuente",
+        ],
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "byte_agotado_transparente.png",
+    }),
+    "problema": ("PLANO_WAKE_WORD", {
+        "estilo_fondo": "viaje_espacial",
+        "badge": "SOLO DESPIERTA CON SU PALABRA",
+        "pildora": "Escucha recién DESPUÉS de la palabra",
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "problema_guion_15_ia_celular_transparente.png",
+    }),
+    "punto_1": ("PLANO_CIRCLE_TO_SEARCH", {
+        "estilo_fondo": "viaje_espacial",
+        "badge": "GEMINI EN ANDROID • BUSCÁ CIRCULANDO",
+        "ui_clave": ["busca"],
+        "pildora": "Buscá circulando lo que ves en pantalla",
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "byte_computadora_feliz_transparente.png",
+    }),
+    "punto_2": ("PLANO_IOS_RESUMEN_NOTIF", {
+        "estilo_fondo": "viaje_espacial",
+        "badge": "APPLE INTELLIGENCE • RESUMEN Y ESCRITURA",
+        "ui_clave": ["resume"],
+        "pildora": "Resume avisos y reescribe en cualquier app",
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "punto_2_guion_08_busqueda_investigacion_transparente.png",
+    }),
+    "resultado": ("PLANO_CELU_PRIMERO_NUBE", {
+        "estilo_fondo": "viaje_espacial",
+        "badge": "CELULAR PRIMERO • NUBE DESPUÉS",
+        "pildora": "La nube entra cuando se la pide",
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "punto1_feliz_transparente.png",
+    }),
+    "cierre": ("PLANO_CIERRE_RARA_FRASE", {
+        "estilo_fondo": "viaje_espacial",
+        "badge": "LA PREGUNTA DE BYTE PARA EL FEED",
+        "pregunta_l1": "¿Cuál es la cosa más rara",
+        "pregunta_l2": "que le dijiste a tu asistente?",
+        "pildora": "Dejá tu respuesta abajo",
+        "sprite_byte": DIR_BYTE_TRANSPARENTES / "cierre_saltando_transparente.png",
+    }),
+}
+
+
+def generar_video_interactivo_celular_ia(
+    tipo_escena: str,
+    duracion_segundos: float,
+    ruta_salida: Union[str, Path],
+    fps: int = 30,
+    ancho: int = 1080,
+    alto: int = 1920,
+    eventos: Optional[Dict[str, Any]] = None,
+) -> Path:
+    """
+    Wrapper para generar videos de fondo interactivos de Video 15 (IA en tu celular).
+    `eventos` (opcional) trae {"palabras": [...], "inicio": t} del alignment de la
+    escena; con él se calculan los tiempos de sync de voz (typing de píldora, pop
+    de notificación, círculo, merge) que se inyectan en cfg["eventos"].
+    """
+    mapa = {
+        "cold_open": "cold_open",
+        "hook": "hook",
+        "problema": "problema",
+        "escena_problema": "problema",
+        "punto_1": "punto_1",
+        "demostracion_1": "punto_1",
+        "gemini": "punto_1",
+        "punto_2": "punto_2",
+        "demostracion_2": "punto_2",
+        "apple": "punto_2",
+        "iphone": "punto_2",
+        "resultado": "resultado",
+        "cierre": "cierre",
+    }
+    clave = mapa.get(tipo_escena, "cold_open")
+    arquetipo, cfg_base = CONFIGS_CELULAR_IA.get(clave, ("PLANO_CELU_POPUP_SOSPECHA", {}))
+    cfg = dict(cfg_base)
+
+    if eventos and eventos.get("palabras"):
+        from src.eventos_voz import encontrar_inicio
+        palabras = eventos["palabras"]
+        inicio = float(eventos.get("inicio", 0.0))
+        t_ui = None
+        for k in (cfg.get("ui_clave") or []):
+            g = encontrar_inicio(palabras, k)
+            if g is not None:
+                t_ui = max(0.0, g - inicio)
+                break
+        t_pildora = None
+        if cfg.get("pildora"):
+            g = encontrar_inicio(palabras, cfg["pildora"])
+            if g is not None:
+                t_pildora = max(0.0, g - inicio)
+            else:
+                t_pildora = duracion_segundos * 0.30
+        cfg["eventos"] = {"t_ui": t_ui, "t_pildora": t_pildora}
+
+    return generar_video_cinematico_escena(
+        arquetipo=arquetipo,
+        duracion_segundos=duracion_segundos,
+        ruta_salida=ruta_salida,
+        config=cfg,
+        fps=fps,
+        ancho=ancho,
+        alto=alto
+    )

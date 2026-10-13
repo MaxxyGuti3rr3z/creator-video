@@ -48,6 +48,7 @@ REGISTRO: Dict[str, Tuple[str, str]] = {
     "12": ("test_previews_video_12", "Video 12: Ciberseguridad y Google Ads (7 micro-escenas)"),
     "13": ("test_previews_video_13", "Video 13: Portal de Noticias de IA (7 micro-escenas)"),
     "14": ("test_previews_video_14", "Video 14: Agua e IA (7 micro-escenas)"),
+    "15": ("test_previews_video_15", "Video 15: IA en tu celular (7 micro-escenas)"),
 }
 
 ALIAS: Dict[str, str] = {

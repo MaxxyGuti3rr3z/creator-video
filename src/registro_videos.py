@@ -67,6 +67,11 @@ class ConfigVideo:
     claves_overlay: Tuple[str, ...] = ()
     # True: arquetipo cinematográfico -> capa de overlay FFmpeg transparente
     cinematico: bool = False
+    # Arquetipo de gancho preferido para este video (ver src/director_gancho.py:
+    # "texto_pantalla" | "byte_reacciona" | "mockup_inmediato"); None = rotación
+    # determinista por semilla (número de video). Campo opcional al final: no
+    # rompe las configs existentes.
+    gancho_preferido: Optional[str] = None
 
 
 def _sprites(base: Path, *pares: Tuple[str, str]) -> Tuple[Sprite, ...]:
@@ -191,6 +196,18 @@ _SPRITES_14 = _sprites(
     ("punto_2", "punto_2_guion_13_noticias_ia_realidad_transparente.png"),
     ("resultado", "byte_computadora_feliz_transparente.png"),
     ("cierre", "cierre_guion_13_noticias_ia_realidad_transparente.png"),
+)
+
+# Video 15 (IA en tu celular): rotación completa respecto del 14
+# (perfil sospechoso, agotado, señalando, y cierre saltando)
+_SPRITES_15 = (
+    ("cold_open", DIR_BYTE_ILUSTRACIONES / "byte_perfil.png"),
+    ("hook", DIR_BYTE_TRANSPARENTES / "byte_agotado_transparente.png"),
+    ("problema", DIR_BYTE_ILUSTRACIONES / "byte_señalando_serio.png"),
+    ("punto_1", DIR_BYTE_TRANSPARENTES / "byte_computadora_feliz_transparente.png"),
+    ("punto_2", DIR_BYTE_TRANSPARENTES / "punto_2_guion_08_busqueda_investigacion_transparente.png"),
+    ("resultado", DIR_BYTE_TRANSPARENTES / "punto1_feliz_transparente.png"),
+    ("cierre", DIR_BYTE_TRANSPARENTES / "cierre_saltando_transparente.png"),
 )
 
 
@@ -370,15 +387,28 @@ CONFIGS: Tuple[ConfigVideo, ...] = (
         claves_sprites=("14", "agua"),
         cinematico=True,
     ),
+    ConfigVideo(
+        id="15",
+        claves=("15", "celular"),
+        claves_mockup=("celular_ia", "celular"),
+        nombre_base=None,          # se usa el stem del guion (nombres de sprites/subtítulos)
+        carpeta="video_15_ia_celular",
+        claves_fondos=("15", "celular"),
+        generador_fondos="generar_video_interactivo_celular_ia",
+        etiqueta_fondos="IA en tu celular (Video 15 - Gemini y Apple Intelligence)",
+        sprites=_SPRITES_15,
+        claves_sprites=("15", "celular"),
+        cinematico=True,
+    ),
 )
 
 _POR_ID = {cfg.id: cfg for cfg in CONFIGS}
 
 # Orden histórico de cada bloque (replica el if/elif original; 12/13 ahora
 # tienen carpeta canónica explícita en su config; 14 se agrega al frente)
-_ORDEN_CARPETA = ("14", "13", "12", "03", "02", "04", "05", "06", "07", "08", "10", "11", "09", "01")
-_ORDEN_SPRITES = ("14", "13", "12", "11", "10", "09", "08", "07", "04", "05", "06", "03", "02", "01")
-_ORDEN_FONDOS = ("14", "03", "04", "02", "05", "06", "07", "08", "09", "10", "11", "12", "13")
+_ORDEN_CARPETA = ("15", "14", "13", "12", "03", "02", "04", "05", "06", "07", "08", "10", "11", "09", "01")
+_ORDEN_SPRITES = ("15", "14", "13", "12", "11", "10", "09", "08", "07", "04", "05", "06", "03", "02", "01")
+_ORDEN_FONDOS = ("15", "14", "03", "04", "02", "05", "06", "07", "08", "09", "10", "11", "12", "13")
 
 
 def _coincide(cfg: ConfigVideo, texto: str, claves: Tuple[str, ...],
@@ -469,18 +499,35 @@ def generar_fondos_del_video(
     segmentos: List[dict],
     dir_fondos: Path,
     forzar: bool = False,
+    alignment: Optional[dict] = None,
 ) -> List[Path]:
     """
     Genera (o reutiliza) un MP4 de fondo por escena con el generador del video.
+    Si se pasa el alignment (character-level de ElevenLabs), cada escena recibe
+    su timeline de palabras como `eventos` para sincronizar la UI con la voz
+    (solo si el generador acepta el kwarg; los generadores viejos lo ignoran).
     Devuelve la lista de rutas absolutas, en orden de escena.
     """
+    import inspect
+
     generador = obtener_generador(cfg.generador_fondos)
+    soporta_eventos = "eventos" in inspect.signature(generador).parameters
     rutas: List[Path] = []
     for i, seg in enumerate(segmentos):
         tipo_escena = seg["tipo"]
         p_fondo = dir_fondos / f"fondo_escena_{i}_{tipo_escena}.mp4"
         dur_esc = (seg["fin"] - seg["inicio"]) + 0.15
         if forzar or not (p_fondo.exists() and p_fondo.stat().st_size > 50000):
-            generador(tipo_escena, dur_esc, p_fondo)
+            kwargs: dict = {}
+            if soporta_eventos and alignment:
+                try:
+                    from src.eventos_voz import palabras_de_segmento
+                    kwargs["eventos"] = {
+                        "palabras": palabras_de_segmento(seg, alignment),
+                        "inicio": float(seg.get("inicio", 0.0)),
+                    }
+                except Exception:
+                    kwargs = {}
+            generador(tipo_escena, dur_esc, p_fondo, **kwargs)
         rutas.append(p_fondo.resolve())
     return rutas

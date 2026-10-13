@@ -219,10 +219,14 @@ class TestTransicionesRotativas(unittest.TestCase):
             self.assertNotEqual(a, b)
 
     def test_pin_narrativo_por_tipo(self):
-        self.assertEqual(transicion_para_escena(3, "problema", 0), "fadeblack")
-        self.assertEqual(transicion_para_escena(3, "escena_problema", 0), "fadeblack")
-        self.assertEqual(transicion_para_escena(3, "panico", 0), "fadeblack")
-        self.assertEqual(transicion_para_escena(3, "resultado", 0), "fadewhite")
+        self.assertEqual(transicion_para_escena(3, "problema", 0), "circleclose")
+        self.assertEqual(transicion_para_escena(3, "escena_problema", 0), "circleclose")
+        self.assertEqual(transicion_para_escena(3, "panico", 0), "circleclose")
+        self.assertEqual(transicion_para_escena(3, "resultado", 0), "circleopen")
+
+    def test_catalogo_sin_fundes_a_negro_o_blanco(self):
+        self.assertNotIn("fadeblack", TRANSICIONES_XFADE)
+        self.assertNotIn("fadewhite", TRANSICIONES_XFADE)
 
     def test_anti_repeticion_con_pin_narrativo(self):
         t1 = transicion_para_escena(1, "resultado", 0)

@@ -25,12 +25,22 @@ from pathlib import Path
 import re
 import subprocess
 import unicodedata
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 try:
     from src.rutas import DIR_FONDOS, DIR_ANIMACIONES_BYTE
 except ImportError:
     from rutas import DIR_FONDOS, DIR_ANIMACIONES_BYTE
+
+try:
+    from src.enfasis import PuntoEnfasis, construir_filtro_enfasis
+except ImportError:
+    from enfasis import PuntoEnfasis, construir_filtro_enfasis
+
+try:
+    from src.director_gancho import TRATAMIENTOS
+except ImportError:
+    from director_gancho import TRATAMIENTOS
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -780,16 +790,17 @@ def generar_fondo_texturado(
 # lint_zonas_seguras los detecta como violación (evidencia video_13 frame_0028).
 TRANSICIONES_XFADE: Tuple[str, ...] = (
     "fade", "wiperight", "circleclose", "circleopen",
-    "wipeleft", "fadeblack", "wipedown", "fadewhite",
+    "wipeleft", "wipedown",
 )
 
 # Ajuste narrativo: la escena que llega pinnea la transición para que la
 # edición acompañe la historia (valores siempre dentro del catálogo).
+# Sin fadeblack/fadewhite: los fundes a negro/blanco restan foco al contenido.
 TRANSICIONES_POR_TIPO: Dict[str, str] = {
-    "problema": "fadeblack",
-    "escena_problema": "fadeblack",
-    "panico": "fadeblack",
-    "resultado": "fadewhite",
+    "problema": "circleclose",
+    "escena_problema": "circleclose",
+    "panico": "circleclose",
+    "resultado": "circleopen",
 }
 
 # Grado cinematográfico sutil (vigilar brillo en zonas con lint_zonas_seguras)
@@ -826,6 +837,45 @@ def transicion_para_escena(
     return elegida
 
 
+def _expresion_zoom_gancho(trat: Dict[str, float], total_frames: int) -> str:
+    """Expresión zoompan z(on) del clip 0 para una variante de gancho.
+
+    - Punch (B): subida rápida a z_max y retorno suave (curva del enfasis).
+    - Lento (C): zoom-in lineal que se sostiene hasta z_max.
+    Siempre z≥1.0 y ancla (540, 250) — mismo rango seguro del punch-in
+    (src/enfasis.py); z<1 revelaría bordes en crop/zoompan.
+    Devuelve "" si la variante es el control (sin zoom).
+    """
+    z_max = float(trat.get("z_max", 1.0))
+    if z_max <= 1.0:
+        return ""
+    ax, ay = 540, 250
+    dur_up = float(trat.get("dur_zoom_up", 0.0))
+    dur_down = float(trat.get("dur_zoom_down", 0.0))
+    dur_lento = float(trat.get("dur_zoom_lento", 0.0))
+    if dur_up > 0 and dur_down > 0:
+        # Punch: bump de (z_max-1) con subida rápida y retorno suave
+        total_s = dur_up + dur_down
+        dur_f = max(1.0, total_s * 30)
+        amp = z_max - 1.0
+        z_expr = (
+            f"1+{amp:.4f}*sin(PI*pow(clip(on/{dur_f:.1f},0,1),0.6))"
+            f"*between(on,0,{dur_f:.1f})"
+        )
+    elif dur_lento > 0:
+        # Lento: lineal de 1.0 a z_max en dur_lento, luego se sostiene
+        dur_f = max(1.0, dur_lento * 30)
+        amp = z_max - 1.0
+        z_expr = f"1+{amp:.4f}*clip(on/{dur_f:.1f},0,1)"
+    else:
+        return ""
+    return (
+        f"zoompan=z='{z_expr}':"
+        f"x='{ax}-{ax}/zoom':y='{ay}-{ay}/zoom':"
+        f"d=1:s=1080x1920:fps=30"
+    )
+
+
 def ensamblar_video(
     imagenes: Union[List[Union[str, Path]], Dict[str, Union[str, Path]]],
     audio: Union[str, Path],
@@ -834,7 +884,9 @@ def ensamblar_video(
     segmentos: Optional[List[Dict[str, Any]]] = None,
     ruta_salida: Optional[Union[str, Path]] = None,
     fondos: Optional[List[Union[str, Path]]] = None,
-    fade_duration: float = 0.15
+    fade_duration: float = 0.15,
+    puntos_enfasis: Optional[Sequence[Sequence[PuntoEnfasis]]] = None,
+    variante_gancho: Optional[str] = None,
 ) -> str:
     """
     Ensambla el video vertical 9:16 (1080x1920) a 30fps con composición en DOS CAPAS:
@@ -842,6 +894,18 @@ def ensamblar_video(
     2. Capa de Byte: Imagen transparente centrada con respiración senoidal (escala oscilando entre 0.96 y 1.04).
     3. Superposición con overlay y transiciones xfade rotativas (anti-template) entre escenas.
     4. Grado cinematográfico (vignette + eq + grano), burn-in de subtítulos ASS karaoke y mezcla de audio AAC.
+
+    `puntos_enfasis`: opcional, una secuencia de PuntoEnfasis por escena (tiempos
+    LOCALES de escena). Si se provee, se aplica un punch-in (zoompan z≥1 con
+    ancla en el mockup) a la capa de FONDO de esa escena, sin tocar a Byte ni
+    los subtítulos (ver src/enfasis.py). None = sin punch-in (por defecto).
+
+    `variante_gancho`: opcional, arquetipo de gancho visual del clip 0 (ver
+    src/director_gancho.py: "texto_pantalla" | "byte_reacciona" |
+    "mockup_inmediato"). Cambia SOLO el tratamiento visual del primer segmento
+    (mismo audio/ASS => 0 créditos). None = comportamiento histórico exacto.
+    Si el clip 0 tiene variante con zoom, el punch-in de énfasis NO se aplica
+    en ese clip (evita multiplicar zooms y violar safe zones; z_total≤1.04).
     """
     audio_path = Path(audio).resolve()
     ass_path = Path(archivo_ass).resolve()
@@ -883,6 +947,11 @@ def ensamblar_video(
             rutas_fondos.append(p_fondo.resolve())
     else:
         rutas_fondos = [Path(f).resolve() for f in fondos]
+
+    # Tratamiento visual del gancho (clip 0); None o desconocido = control
+    trat_gancho = TRATAMIENTOS.get(variante_gancho or "", TRATAMIENTOS["texto_pantalla"])
+    if variante_gancho and variante_gancho in TRATAMIENTOS and variante_gancho != "texto_pantalla":
+        logger.info(f"Variante de gancho: {variante_gancho} (solo clip 0)")
 
     clip_durations: List[float] = []
     offsets: List[float] = []
@@ -1001,23 +1070,59 @@ def ensamblar_video(
 
         # 1. Capa de Fondo texturada con paneo real visible (o video directo si ya es MP4 animado)
         is_video_bg = str(rutas_fondos[i]).lower().endswith(".mp4")
+        zoom_gancho = _expresion_zoom_gancho(trat_gancho, total_frames) if i == 0 else ""
         if is_video_bg:
             chain_bg = (
                 f"[{bg_idx}:v]scale=1080:1920:force_original_aspect_ratio=decrease,"
-                f"pad=1080:1920:(1080-iw)/2:(1920-ih)/2,fps=30,settb=1/30,setsar=1[bg{i}]"
+                f"pad=1080:1920:(1080-iw)/2:(1920-ih)/2,"
             )
+            if zoom_gancho:
+                chain_bg += f"{zoom_gancho},"
+        elif zoom_gancho:
+            # Variante de gancho manda sobre el zoompan base del clip 0
+            chain_bg = f"[{bg_idx}:v]{zoom_gancho},"
         else:
-            chain_bg = (
-                f"[{bg_idx}:v]{zoompan_expr},"
-                f"fps=30,settb=1/30,setsar=1[bg{i}]"
-            )
+            chain_bg = f"[{bg_idx}:v]{zoompan_expr},"
+
+        # Punch-in de énfasis (solo capa bg; Byte y subs quedan intactos).
+        # Verificado: crop/zoompan exigen z≥1; ancla (540,250) mantiene el
+        # mockup dentro de las safe zones a z≤1.035 (src/enfasis.py).
+        # Si el clip 0 ya tiene zoom de gancho, se omite el enfasis ahí
+        # (evita multiplicar zooms: z_total = z_gancho ≤ 1.04, seguro).
+        filtro_enfasis = ""
+        if puntos_enfasis is not None and i < len(puntos_enfasis):
+            if i == 0 and zoom_gancho:
+                logger.info(
+                    "Punch-in de énfasis omitido en clip 0: "
+                    "la variante de gancho ya aplica zoom (evita safe zones)."
+                )
+            else:
+                filtro_enfasis = construir_filtro_enfasis(puntos_enfasis[i])
+                if filtro_enfasis:
+                    logger.info(
+                        f"Punch-in de énfasis en escena {i}: "
+                        f"{len(puntos_enfasis[i])} punto(s)"
+                    )
+                    filtro_enfasis += ","
+        chain_bg += f"{filtro_enfasis}fps=30,settb=1/30,setsar=1[bg{i}]"
         filter_chains.append(chain_bg)
 
         # 2. Capa de Byte animada con canal alfa (680x680)
         is_mov_fg = str(rutas_fg[i]).lower().endswith(".mov")
+        # Choque de Byte (variante B del gancho, solo clip 0): escala de
+        # impacto que decae a 1.0; zoompan z≥1 preserva alfa (verificado argb).
+        choque_byte = ""
+        if i == 0 and trat_gancho.get("escala_choque_byte", 1.0) > 1.0:
+            esc = float(trat_gancho["escala_choque_byte"])
+            choque_f = max(1.0, 0.25 * 30)
+            choque_byte = (
+                f"zoompan=z='{esc:.3f}-({esc - 1.0:.3f}*clip(on/{choque_f:.1f},0,1))':"
+                f"x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':"
+                f"d=1:s=680x680:fps=30,"
+            )
         if is_mov_fg:
             chain_fg = (
-                f"[{fg_idx}:v]format=rgba,fps=30,settb=1/30,setsar=1[fg{i}]"
+                f"[{fg_idx}:v]{choque_byte}format=rgba,fps=30,settb=1/30,setsar=1[fg{i}]"
             )
         else:
             chain_fg = (
@@ -1033,7 +1138,11 @@ def ensamblar_video(
         # Curva elástica BackEaseOut para la entrada en los primeros 0.35s
         spring_p = "if(lt(t,0.35), 1+2.70158*pow(t/0.35-1,3)+1.70158*pow(t/0.35-1,2), 1)"
 
-        if i == 0:
+        if i == 0 and trat_gancho.get("entrada_byte") == "lateral":
+            # Variante C: Byte entra deslizándose desde la izquierda
+            x_expr = f"70 - (1 - {spring_p})*320"
+            y_expr = "1270"
+        elif i == 0:
             # Hook: Byte entra desde abajo con rebote elástico al centro
             x_expr = "(W-w)/2"
             y_expr = f"1270 + (1 - {spring_p})*360"

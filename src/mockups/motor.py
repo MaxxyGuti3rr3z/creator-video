@@ -678,3 +678,75 @@ def generar_video_interactivo_presentaciones(
     )
 
 
+# ---------------------------------------------------------------------------
+# Byte animado: squash & stretch + wobble + micro-pulse de vida
+# ---------------------------------------------------------------------------
+def squash_stretch(
+    t: float,
+    frec: float = 3.0,
+    amp: float = 0.065,
+    stretch: float = 0.022,
+    compensacion: float = 0.55,
+) -> Tuple[float, float]:
+    """
+    Fases elásticas sutiles para un rebote abs(sin): en el contacto (sin=0) el
+    cuerpo se aplasta levemente; en el ápice se estira poco. Amplitud calibrada
+    a la mitad del valor original (0.13/0.045) para que lea como vida, no como
+    goma. Devuelve (sx, sy) con anclaje de pies en el suelo (caller fija base_y).
+    """
+    c = abs(math.cos(t * frec))  # 1.0 en contacto, 0.0 en ápice
+    sy = 1.0 + stretch * (1.0 - c) - amp * c
+    sx = 1.0 + (1.0 - sy) * compensacion
+    return sx, sy
+
+
+def _factor_pulso_vida(t: float, ciclo: float = 3.1, ancho: float = 0.12) -> float:
+    """Micro-pulse breve ~1 vez por ciclo: lee como un respiro/parpadeo de cuerpo."""
+    fase = t % ciclo
+    return 1.0 + 0.015 * max(0.0, 1.0 - abs(fase - (ciclo - ancho)) / ancho)
+
+
+def pegar_byte_animado(
+    frame: Image.Image,
+    sprite: Union[str, Path],
+    base_y: int = 1650,
+    alto: int = 540,
+    t_sec: Optional[float] = None,
+    rebote: int = 0,
+    cx: Optional[int] = None,
+    wobble_grados: float = 0.9,
+) -> None:
+    """
+    Pega a Byte con vida procedural: rebote vertical + squash & stretch + micro-
+    wobble de rotación + micro-pulse. Si se pasa t_sec se autocalcula el rebote;
+    si no, usa el rebote explícito (compatibilidad con planos estáticos).
+    """
+    with Image.open(sprite) as img_b:
+        b_rgba = img_b.convert("RGBA")
+        bbox = b_rgba.getbbox()
+        if bbox:
+            b_rgba = b_rgba.crop(bbox)
+        aspect = b_rgba.height / max(1, b_rgba.width)
+        bw = min(int(alto / aspect), 1040)
+        bh = int(bw * aspect)
+
+        sx, sy = 1.0, 1.0
+        rot = 0.0
+        if t_sec is not None:
+            rebote = int(round(10 * abs(math.sin(t_sec * 3.0))))
+            sx, sy = squash_stretch(t_sec)
+            pulso = _factor_pulso_vida(t_sec)
+            sx *= pulso
+            sy *= pulso
+            rot = wobble_grados * math.sin(t_sec * 2.2 + 0.8)
+
+        w2 = max(1, int(bw * sx))
+        h2 = max(1, int(bh * sy))
+        b_out = b_rgba.resize((w2, h2), Image.Resampling.LANCZOS) if (w2 != bw or h2 != bh) else b_rgba
+        if abs(rot) > 0.01:
+            b_out = b_out.rotate(rot, resample=Image.Resampling.BICUBIC, expand=True)
+        bx = (frame.width - b_out.width) // 2 if cx is None else cx - b_out.width // 2
+        by = base_y - b_out.height - rebote
+        frame.paste(b_out, (bx, by), b_out)
+
+

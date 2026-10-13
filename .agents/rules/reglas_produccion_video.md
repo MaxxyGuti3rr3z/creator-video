@@ -18,7 +18,7 @@
 
 ### Transiciones de escena — SOLO revelado/mezcla (prohibido desplazar píxeles):
 
-- En `src/shorts_assembler.py`, el catálogo `TRANSICIONES_XFADE` contiene únicamente tipos que no mueven píxeles (`fade`, `wipe*`, `circle*`, `fadeblack`, `fadewhite`): cada píxel de salida toma el valor de A o B **en su misma posición**, así ningún contenido puede salir de las safe zones.
+- En `src/shorts_assembler.py`, el catálogo `TRANSICIONES_XFADE` contiene únicamente tipos que no mueven píxeles (`fade`, `wipe*`, `circle*`): cada píxel de salida toma el valor de A o B **en su misma posición**, así ningún contenido puede salir de las safe zones. PROHIBIDO `fadeblack`/`fadewhite`: los fundes a negro/blanco restan foco al contenido (decisión del editor, 2026-10-13).
 - PROHIBIDO agregar tipos de traducción (`slideleft`, `slideright`, `smoothup`, `slidedown`, `smoothleft`, `smoothdown`, `zoomin`): durante la ventana del corte (~0.4s) empujan los mockups fuera de x:100..980 y `lint_zonas_seguras` los detecta. Evidencia real: `test_artifacts/lint_evidencia/video_guion_13_noticias_ia_realidad_frame_0028.png` (POST-VUELO bloqueado, commit 4d8ab90).
 
 ---
@@ -218,4 +218,33 @@ Regla: Nunca el sprite de apertura repetido entre dos VIDEOS consecutivos.
 
 ---
 
-Última actualización: Extraída de conversación 78c3750e (Videos 7-13, octubre 2026)
+## 16. PUNCH-IN DE ÉNFASIS Y VARIANTES DEL GANCHO — REGLAS DE ZOOM
+
+### Punch-in de énfasis (`src/enfasis.py`, activo por defecto salvo `--sin-enfasis`)
+
+- Zoom breve (~0.20 s) sincronizado con el arranque de una palabra clave (punto de énfasis).
+- Rango OBLIGATORIO `Z ∈ [1.0, 1.035]`, ancla `(540, 250)`. PROHIBIDO Z < 1: `crop` falla
+  con entrada <1080x1920 y `zoompan` con z<1 revela bordes negros.
+- Aplica SOLO a la capa de fondo+mockup; Byte y subtítulos se overlay-ean después (quedan intactos).
+- EXCLUIDO en videos cinemáticos (Byte horneado en el bg): ningún ancla admite 3-4% sin escalarlo
+  fuera de safe zones.
+- Si el clip 0 tiene su propio zoom de variante de gancho, el punch se omite en ese clip.
+- El árbitro final SIEMPRE es `python pruebas/lint_zonas_seguras.py` sobre el MP4 final.
+
+### Variantes del gancho (`src/director_gancho.py`, flag `--variantes-gancho=N`)
+
+- Son VISUALES: mismo audio y mismo ASS, 0 créditos ElevenLabs. Solo cambia el tratamiento
+  del clip 0 (A control / B punch de impacto / C zoom-in lento + Byte lateral).
+- La variante de producción va a `final/video_XX.mp4`; las demás a `intermedios/variantes/`.
+- Rotación del arquetipo entre videos consecutivos vía `ConfigVideo.gancho_preferido`
+  (auditar con `python pruebas/lint_gancho.py`).
+
+### Registro de experimentos (`src/registro_experimentos.py`)
+
+- Cada variante renderizada queda en `datos/experimentos.csv` (append-only, rastreado por git):
+  fecha, video, variante, arquetipo de gancho, punch, ruta, notas. El pipeline lo hace solo
+  tras el POST-VUELO; fuera del pipeline llamar a `registrar_experimento(...)`.
+
+---
+
+Última actualización: Fases 1-3 de la TAREA (punch-in, director de gancho, registro), octubre 2026

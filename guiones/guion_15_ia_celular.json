@@ -1,0 +1,56 @@
+{
+  "video": 15,
+  "tema": "IA en tu celular: qué hace de verdad Gemini y Apple Intelligence, y cuándo te escucha",
+  "duracion_objetivo_seg": 36,
+  "tipo_mockup": "celular_ia",
+  "mockup_sugerido": "celular_ia",
+  "fondo_dinamico": "viaje_espacial",
+
+  "cold_open": "Dicen que tu celular con IA te escucha todo el día y lee tus mensajes,",
+  "hook": "Y por eso el miedo vuelve,",
+  "problema": "Pero la asistente solo despierta con su palabra mágica, y procesa lo que le pedís recién después,",
+
+  "demostracion": [
+    {
+      "herramienta": "Gemini en Android (Google)",
+      "accion": "Gemini vive en el teclado del Android, redacta mensajes y busca con un circulado en la pantalla,",
+      "reaccion_byte": "Byte prueba la búsqueda circular",
+      "pill_beneficio": "🔍 Buscá circulando lo que ves en pantalla",
+      "capacidades_verificadas": [
+        "Circle to Search: apretás lo de la pantalla, lo circulás, y aparece la búsqueda al instante",
+        "Gemini Nano corre en el propio teléfono para respuestas rápidas sin depender de la nube",
+        "Gemini en Gmail y Messages redacta borradores con tu tono de escribir"
+      ],
+      "no_afirmar": [
+        "que Gemini funciona sin internet para todo",
+        "que la asistente escucha de forma continua",
+        "que reemplaza tu manera de escribir mensajes"
+      ],
+      "fuente": "Google (Android Developers, documentación de Circle to Search y Gemini Nano)",
+      "fecha_verificacion": "2026-10-12",
+      "confianza_dato": "alta"
+    },
+    {
+      "herramienta": "Apple Intelligence (iPhone)",
+      "accion": "En el iPhone, Apple Intelligence resume avisos y reescribe textos, eligiendo qué corre en el celu y qué en la nube,",
+      "reaccion_byte": "Byte verifica dónde se procesa",
+      "pill_beneficio": "🧠 En el celu primero, en la nube si hace falta",
+      "capacidades_verificadas": [
+        "Herramientas de escritura para reescribir, resumir y cambiar el tono en cualquier app",
+        "Resúmenes de notificaciones directo en la pantalla de bloqueo",
+        "Private Cloud Compute: la nube corre en servidores propios de Apple que no guardan tus datos"
+      ],
+      "no_afirmar": [
+        "que todo se procesa únicamente en el dispositivo",
+        "que nunca ningún dato sale del teléfono",
+        "que funciona en cualquier iPhone sin restricciones"
+      ],
+      "fuente": "Apple (documentación oficial de Apple Intelligence y Private Cloud Compute)",
+      "fecha_verificacion": "2026-10-12",
+      "confianza_dato": "alta"
+    }
+  ],
+
+  "resultado": "La IA del celular rinde más en el propio aparato, y la nube entra cuando se la pide,",
+  "cierre": "¿Cuál es la cosa más rara que le dijiste a la asistente de tu celular, dejala abajo"
+}
