@@ -16,6 +16,11 @@
 | **Subtítulos Karaoke ASS** | y: 960..1080 | Subtítulos amarillo puro #FFF500 con borde negro. Tamaño: 46px. MarginL/R: 80px. |
 | **Zona Sagrada de Byte** | y: 1120..1650 | 100% exclusiva para Byte. PROHIBICIÓN ABSOLUTA de banners en y: 1200..1850. |
 
+### Transiciones de escena — SOLO revelado/mezcla (prohibido desplazar píxeles):
+
+- En `src/shorts_assembler.py`, el catálogo `TRANSICIONES_XFADE` contiene únicamente tipos que no mueven píxeles (`fade`, `wipe*`, `circle*`, `fadeblack`, `fadewhite`): cada píxel de salida toma el valor de A o B **en su misma posición**, así ningún contenido puede salir de las safe zones.
+- PROHIBIDO agregar tipos de traducción (`slideleft`, `slideright`, `smoothup`, `slidedown`, `smoothleft`, `smoothdown`, `zoomin`): durante la ventana del corte (~0.4s) empujan los mockups fuera de x:100..980 y `lint_zonas_seguras` los detecta. Evidencia real: `test_artifacts/lint_evidencia/video_guion_13_noticias_ia_realidad_frame_0028.png` (POST-VUELO bloqueado, commit 4d8ab90).
+
 ---
 
 ## 2. SUBTÍTULOS KARAOKE ASS — ESPECIFICACIONES EXACTAS
